@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "C:\Sofware\embeded\rtthread\env\tools\ConEmu\ConEmu\..\..\..\tools\scripts\env.py", line 94, in <module>
+    main()
+  File "C:\Sofware\embeded\rtthread\env\tools\ConEmu\ConEmu\..\..\..\tools\scripts\env.py", line 90, in main
+    args.func(args)
+  File "C:\Sofware\embeded\rtthread\env\tools\scripts\cmds\cmd_package.py", line 1086, in cmd
+    package_upgrade()
+  File "C:\Sofware\embeded\rtthread\env\tools\scripts\cmds\cmd_package.py", line 1053, in package_upgrade
+    upgrade_packages_index()
+  File "C:\Sofware\embeded\rtthread\env\tools\scripts\cmds\cmd_package.py", line 991, in upgrade_packages_index
+    get_package_url, get_ver_sha = get_url_from_mirror_server('packages', 'latest')
+TypeError: 'NoneType' object is not iterable
