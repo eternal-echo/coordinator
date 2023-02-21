@@ -83,6 +83,12 @@
 
 /* Device virtual file system */
 
+#define RT_USING_DFS
+#define DFS_USING_WORKDIR
+#define DFS_FILESYSTEMS_MAX 4
+#define DFS_FILESYSTEM_TYPES_MAX 4
+#define DFS_FD_MAX 16
+#define RT_USING_DFS_DEVFS
 /* end of Device virtual file system */
 
 /* Device Drivers */
@@ -105,6 +111,8 @@
 
 /* POSIX layer and C standard library */
 
+#define RT_USING_LIBC
+#define RT_USING_POSIX
 #define RT_LIBC_USING_TIME
 #define RT_LIBC_DEFAULT_TIMEZONE 8
 /* end of POSIX layer and C standard library */
@@ -120,7 +128,7 @@
 
 #define SAL_USING_AT
 /* end of protocol stack implement */
-#define SAL_SOCKETS_NUM 16
+#define SAL_USING_POSIX
 /* end of Socket abstraction layer */
 
 /* Network interface device */
@@ -156,6 +164,20 @@
 
 /* Utilities */
 
+#define RT_USING_ULOG
+#define ULOG_OUTPUT_LVL_D
+#define ULOG_OUTPUT_LVL 7
+#define ULOG_ASSERT_ENABLE
+#define ULOG_LINE_BUF_SIZE 128
+
+/* log format */
+
+#define ULOG_USING_COLOR
+#define ULOG_OUTPUT_TIME
+#define ULOG_OUTPUT_LEVEL
+#define ULOG_OUTPUT_TAG
+/* end of log format */
+#define ULOG_BACKEND_USING_CONSOLE
 /* end of Utilities */
 /* end of RT-Thread Components */
 
@@ -187,6 +209,54 @@
 
 /* IoT Cloud */
 
+#define PKG_USING_ALI_IOTKIT
+#define PKG_USING_ALI_IOTKIT_PRODUCT_KEY "hcixG5BeXXR"
+#define PKG_USING_ALI_IOTKIT_PRODUCT_SECRET "X8WmP94UNIycqpeR"
+#define PKG_USING_ALI_IOTKIT_DEVICE_NAME "coordinator-wifi"
+#define PKG_USING_ALI_IOTKIT_DEVICE_SECRET "c767d9aba27822f2a8ee3819c8e3cbfb"
+#define PKG_ALI_IOTKIT_SELECT_ITEM
+#define PLATFORM_HAS_STDINT
+#define PLATFORM_HAS_DYNMEM
+#define PLATFORM_HAS_OS
+#define INFRA_STRING
+#define INFRA_NET
+#define INFRA_LIST
+#define INFRA_LOG_NETWORK_PAYLOAD
+#define INFRA_LOG
+
+/* Log Configurations */
+
+#define INFRA_LOG_MUTE_FLW
+#define INFRA_LOG_MUTE_DBG
+#define INFRA_LOG_MUTE_INF
+#define INFRA_LOG_MUTE_WRN
+#define INFRA_LOG_MUTE_CRT
+/* end of Log Configurations */
+#define INFRA_TIMER
+#define INFRA_CJSON
+#define INFRA_SHA256
+#define INFRA_REPORT
+#define INFRA_COMPAT
+#define INFRA_CLASSIC
+#define DEV_SIGN
+#define MQTT_COMM_ENABLED
+
+/* MQTT Configurations */
+
+#define MQTT_DEFAULT_IMPL
+#define MQTT_DIRECT
+/* end of MQTT Configurations */
+#define DEVICE_MODEL_CLASSIC
+#define LOG_REPORT_TO_CLOUD
+#define DEVICE_MODEL_ENABLED
+
+/* Device Model Configurations */
+
+/* end of Device Model Configurations */
+#define PKG_USING_ALI_IOTKIT_SAMPLES
+#define PKG_USING_ALI_IOTKIT_MQTT_SAMPLE
+#define PKG_USING_ALI_IOTKIT_LATEST_VERSION
+#define PKG_ALI_IOTKIT_VER_NUM 0x99999
 /* end of IoT Cloud */
 /* end of IoT - internet of things */
 
@@ -198,6 +268,8 @@
 
 /* JSON: JavaScript Object Notation, a lightweight data-interchange format */
 
+#define PKG_USING_CJSON
+#define PKG_USING_CJSON_LATEST_VERSION
 /* end of JSON: JavaScript Object Notation, a lightweight data-interchange format */
 
 /* XML: Extensible Markup Language */
