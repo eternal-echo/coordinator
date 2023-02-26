@@ -112,7 +112,10 @@
 /* POSIX layer and C standard library */
 
 #define RT_USING_LIBC
+#define RT_USING_PTHREADS
+#define PTHREAD_NUM_MAX 8
 #define RT_USING_POSIX
+#define RT_USING_POSIX_MMAP
 #define RT_LIBC_USING_TIME
 #define RT_LIBC_DEFAULT_TIMEZONE 8
 /* end of POSIX layer and C standard library */
@@ -209,54 +212,6 @@
 
 /* IoT Cloud */
 
-#define PKG_USING_ALI_IOTKIT
-#define PKG_USING_ALI_IOTKIT_PRODUCT_KEY "hcixxJENrUz"
-#define PKG_USING_ALI_IOTKIT_PRODUCT_SECRET "Cryjc5840O1b89Nj"
-#define PKG_USING_ALI_IOTKIT_DEVICE_NAME "coordinator0"
-#define PKG_USING_ALI_IOTKIT_DEVICE_SECRET "bafdf3991aeab4fe2991e3d281a9f725"
-#define PKG_ALI_IOTKIT_SELECT_ITEM
-#define PLATFORM_HAS_STDINT
-#define PLATFORM_HAS_DYNMEM
-#define PLATFORM_HAS_OS
-#define INFRA_STRING
-#define INFRA_NET
-#define INFRA_LIST
-#define INFRA_LOG_NETWORK_PAYLOAD
-#define INFRA_LOG
-
-/* Log Configurations */
-
-#define INFRA_LOG_MUTE_FLW
-#define INFRA_LOG_MUTE_DBG
-#define INFRA_LOG_MUTE_INF
-#define INFRA_LOG_MUTE_WRN
-#define INFRA_LOG_MUTE_CRT
-/* end of Log Configurations */
-#define INFRA_TIMER
-#define INFRA_CJSON
-#define INFRA_SHA256
-#define INFRA_REPORT
-#define INFRA_COMPAT
-#define INFRA_CLASSIC
-#define DEV_SIGN
-#define MQTT_COMM_ENABLED
-
-/* MQTT Configurations */
-
-#define MQTT_DEFAULT_IMPL
-#define MQTT_DIRECT
-/* end of MQTT Configurations */
-#define DEVICE_MODEL_CLASSIC
-#define LOG_REPORT_TO_CLOUD
-#define DEVICE_MODEL_ENABLED
-
-/* Device Model Configurations */
-
-/* end of Device Model Configurations */
-#define PKG_USING_ALI_IOTKIT_SAMPLES
-#define PKG_USING_ALI_IOTKIT_MQTT_SAMPLE
-#define PKG_USING_ALI_IOTKIT_LATEST_VERSION
-#define PKG_ALI_IOTKIT_VER_NUM 0x99999
 /* end of IoT Cloud */
 /* end of IoT - internet of things */
 
