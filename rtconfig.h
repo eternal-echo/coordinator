@@ -97,6 +97,7 @@
 #define RT_SERIAL_RB_BUFSZ 64
 #define RT_USING_PIN
 #define RT_USING_RTC
+#define RT_USING_SOFT_RTC
 
 /* Using USB */
 
@@ -231,7 +232,6 @@
 #define BSP_USING_UART1
 #define BSP_USING_UART2
 #define BSP_UART2_RX_USING_DMA
-#define BSP_USING_ONCHIP_RTC
 
 /* Board extended module Drivers */
 
