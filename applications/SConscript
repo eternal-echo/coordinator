@@ -8,4 +8,6 @@ CPPPATH = [cwd, str(Dir('#'))]
 
 group = DefineGroup('Applications', src, depend = [''], CPPPATH = CPPPATH)
 
+group += SConscript('ali-link-sdk/SConscript')
+
 Return('group')
