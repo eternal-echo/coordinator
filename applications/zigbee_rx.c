@@ -37,12 +37,12 @@ void zignee_rx_thread(void *parameter)
         if(result == RT_EOK)
         {
             LOG_D("send data success");
+            param.node_id > 1 ? param.node_id = 1 : param.node_id++;
         }
         else
         {
             LOG_E("send data failed");
         }
         rt_thread_mdelay(1000);
-        param.node_id++;
     }
 }
