@@ -1,0 +1,84 @@
+import os
+from building import *
+
+# 获取当前目录
+cwd = GetCurrentDir()
+CPPPATH = []
+src     = []
+
+# component
+# ## LinkSDK\LinkSDK/components\bootstrap
+# src += Glob('components/bootstrap/*.c')
+# CPPPATH += [cwd + '/components/bootstrap']
+# ## LinkSDK\LinkSDK/components\compress
+# src += Glob('components/compress/*.c')
+# CPPPATH += [cwd + '/components/compress']
+# ## LinkSDK\LinkSDK/components\data-model
+# src += Glob('components/data-model/*.c')
+# CPPPATH += [cwd + '/components/data-model']
+# ## LinkSDK\LinkSDK/components\devinfo
+# src += Glob('components/devinfo/*.c')
+# CPPPATH += [cwd + '/components/devinfo']
+# ## LinkSDK\LinkSDK/components\diag
+# src += Glob('components/diag/*.c')
+# CPPPATH += [cwd + '/components/diag']
+# ## LinkSDK\LinkSDK/components\logpost
+# src += Glob('components/logpost/*.c')
+# CPPPATH += [cwd + '/components/logpost']
+# ## LinkSDK\LinkSDK/components\mqtt_upload
+# src += Glob('components/mqtt_upload/*.c')
+# CPPPATH += [cwd + '/components/mqtt_upload']
+## LinkSDK\LinkSDK/components\ntp
+# src += Glob('components/ntp/*.c')
+# CPPPATH += [cwd + '/components/ntp']
+# ## LinkSDK\LinkSDK/components\ota
+# src += Glob('components/ota/*.c')
+# CPPPATH += [cwd + '/components/ota']
+# ## LinkSDK\LinkSDK/components\shadow
+# src += Glob('components/shadow/*.c')
+# CPPPATH += [cwd + '/components/shadow']
+## LinkSDK\LinkSDK/components\subdev
+src += Glob('components/subdev/*.c')
+CPPPATH += [cwd + '/components/subdev']
+# ## LinkSDK\LinkSDK/components\task
+# src += Glob('components/task/*.c')
+# CPPPATH += [cwd + '/components/task']
+
+# core
+## LinkSDK\core\sysdep
+src += Glob('core/sysdep/*.c')
+CPPPATH += [cwd + '/core/sysdep']
+## LinkSDK\core\utils
+src += Glob('core/utils/*.c')
+CPPPATH += [cwd + '/core/utils']
+## LinkSDK\core
+src += Glob('core/*.c')
+CPPPATH += [cwd + '/core']
+
+# external
+src += Glob('external/*.c')
+
+## LinkSDK\external\libdeflate
+src += Glob('external/libdeflate/lib/*.c')
+CPPPATH += [cwd + '/external/libdeflate/lib']
+CPPPATH += [cwd + '/external/libdeflate']
+
+## LinkSDK\external\mbedtls
+src += Glob('external/mbedtls/library/*.c')
+CPPPATH += [cwd + '/external/mbedtls/include']
+
+# portfiles
+src += Glob('portfiles/aiot_port/rtt_adapter.c')
+src += Glob('portfiles/aiot_port/os_rtthread_impl.c')
+src += Glob('portfiles/aiot_port/at/*.c')
+src += Glob('portfiles/aiot_port/at/module/quectel_bc260y_tcp.c')
+CPPPATH += [cwd + '/portfiles/aiot_port/at']
+CPPPATH += [cwd + '/portfiles/aiot_port']
+
+# samples
+# src += Glob('samples/mqtt_basic_demo.c')
+# src += Glob('samples/subdev_basic_demo.c')
+
+group = DefineGroup('ali_link_sdk', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')
