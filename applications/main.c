@@ -16,7 +16,7 @@
 #define LOG_LVL    DBG_LOG
 #include <rtdbg.h>
 
-#include <param.h>
+#include <gateway.h>
 
 extern void mqtt_tx_thread(void *parameter);
 extern void zignee_rx_thread(void *parameter);
@@ -24,7 +24,6 @@ extern void zignee_rx_thread(void *parameter);
 rt_thread_t mqtt_tx_thread_handle = RT_NULL;
 rt_thread_t zignee_rx_thread_handle = RT_NULL;
 rt_mq_t param_mq_handle = RT_NULL;
-rt_int8_t work_flag = 0;
 
 int main(void)
 {
@@ -59,4 +58,20 @@ int main(void)
     {
         rt_thread_mdelay(500);
     }
+    return RT_EOK;
+
+exit:
+    if(param_mq_handle != RT_NULL)
+    {
+        rt_mq_delete(param_mq_handle);
+    }
+    if(zignee_rx_thread_handle != RT_NULL)
+    {
+        rt_thread_delete(zignee_rx_thread_handle);
+    }
+    if(mqtt_tx_thread_handle != RT_NULL)
+    {
+        rt_thread_delete(mqtt_tx_thread_handle);
+    }
+    return -RT_ERROR;
 }

@@ -23,8 +23,10 @@
 #define LOG_LVL    DBG_LOG
 #include <rtdbg.h>
 
-#include <param.h>
+#include <gateway.h>
 #include <mqtt_adapter.h>
+
+static void error_signal_handler(int signo);
 
 static struct physio_param param = {0};
 static cJSON *payload_json = RT_NULL, *params_json = RT_NULL;
@@ -37,6 +39,8 @@ void mqtt_tx_thread(void *parameter)
     char *payload = RT_NULL;
 
     RT_ASSERT(param_mq_handle != RT_NULL);
+    // install signal handler of error
+    rt_signal_install(ERROR_SIGNAL, error_signal_handler);
     payload_json = cJSON_CreateObject();
     cJSON_AddStringToObject(payload_json, "id", "1");
     cJSON_AddStringToObject(payload_json, "method", "thing.event.property.post");
@@ -55,8 +59,7 @@ void mqtt_tx_thread(void *parameter)
         if(result != RT_EOK)
         {
             LOG_E("mqtt connect failed: %d", result);
-            work_flag = -1;
-            return;
+            goto __exit;
         }
     }
     while(1)
@@ -84,6 +87,34 @@ void mqtt_tx_thread(void *parameter)
                     LOG_E("mqtt publish failed: %d", result);
                 }
             }
+        }
+    }
+__exit:
+    if(payload != RT_NULL)
+    {
+        rt_free(payload);
+    }
+    rt_thread_kill(zignee_rx_thread_handle, ERROR_SIGNAL);
+    rt_thread_kill(rt_thread_self(), ERROR_SIGNAL);
+}
+
+static void error_signal_handler(int signo)
+{
+    LOG_E("error signal: %d", signo);
+    if(signo == ERROR_SIGNAL)
+    {
+        rt_thread_delete(mqtt_tx_thread_handle);
+        if(payload_json != RT_NULL)
+        {
+            cJSON_Delete(payload_json);
+        }
+        if(params_json != RT_NULL)
+        {
+            cJSON_Delete(params_json);
+        }
+        if(mqtt_wrapper.mqtt_disconnect != RT_NULL)
+        {
+            mqtt_wrapper.mqtt_disconnect(&mqtt_wrapper);
         }
     }
 }
