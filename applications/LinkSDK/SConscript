@@ -3,10 +3,11 @@ from building import *
 
 # 获取当前目录
 cwd = GetCurrentDir()
-CPPPATH = []
-src     = []
+groups = []
 
 # component
+CPPPATH = []
+src     = []
 # ## LinkSDK\LinkSDK/components\bootstrap
 # src += Glob('components/bootstrap/*.c')
 # CPPPATH += [cwd + '/components/bootstrap']
@@ -43,8 +44,11 @@ CPPPATH += [cwd + '/components/subdev']
 # ## LinkSDK\LinkSDK/components\task
 # src += Glob('components/task/*.c')
 # CPPPATH += [cwd + '/components/task']
+groups += DefineGroup('Linkkit/components', src, depend = [''], CPPPATH = CPPPATH)
 
 # core
+CPPPATH = []
+src     = []
 ## LinkSDK\core\sysdep
 src += Glob('core/sysdep/*.c')
 CPPPATH += [cwd + '/core/sysdep']
@@ -54,31 +58,37 @@ CPPPATH += [cwd + '/core/utils']
 ## LinkSDK\core
 src += Glob('core/*.c')
 CPPPATH += [cwd + '/core']
+groups += DefineGroup('Linkkit/core', src, depend = [''], CPPPATH = CPPPATH)
 
 # external
+CPPPATH = []
+src     = []
 src += Glob('external/*.c')
-
 ## LinkSDK\external\libdeflate
 src += Glob('external/libdeflate/lib/*.c')
 CPPPATH += [cwd + '/external/libdeflate/lib']
 CPPPATH += [cwd + '/external/libdeflate']
-
 ## LinkSDK\external\mbedtls
 src += Glob('external/mbedtls/library/*.c')
 CPPPATH += [cwd + '/external/mbedtls/include']
+CPPPATH += [cwd + '/external/mbedtls/include/mbedtls']
+groups += DefineGroup('Linkkit/external', src, depend = [''], CPPPATH = CPPPATH)
 
 # portfiles
-src += Glob('portfiles/aiot_port/rtt_adapter.c')
-src += Glob('portfiles/aiot_port/os_rtthread_impl.c')
+CPPPATH = []
+src     = []
+src += Glob('portfiles/aiot_port/*.c')
 src += Glob('portfiles/aiot_port/at/*.c')
 src += Glob('portfiles/aiot_port/at/module/quectel_bc260y_tcp.c')
 CPPPATH += [cwd + '/portfiles/aiot_port/at']
 CPPPATH += [cwd + '/portfiles/aiot_port']
+groups += DefineGroup('Linkkit/portfiles', src, depend = [''], CPPPATH = CPPPATH)
 
 # samples
+# CPPPATH = []
+# src     = []
 # src += Glob('samples/mqtt_basic_demo.c')
 # src += Glob('samples/subdev_basic_demo.c')
+# groups += DefineGroup('Linkkit/samples', src, depend = [''], CPPPATH = CPPPATH)
 
-group = DefineGroup('ali_link_sdk', src, depend = [''], CPPPATH = CPPPATH)
-
-Return('group')
+Return('groups')
