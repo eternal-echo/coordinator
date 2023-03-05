@@ -6,6 +6,7 @@
 
 #include "aiot_at_api.h"
 #include "os_net_interface.h"
+#include <cJSON.h>
 
 #define LOG_TAG "at_port"
 #define LOG_LVL DBG_LOG
@@ -13,6 +14,7 @@
 
 #define AIOT_AT_PORT_NAME "uart3"   /* 串口设备名称 */
 #define AIOT_UART_RX_BUFFER_SIZE 256
+#define AIOT_MEMPOOL_SIZE 1024 * 8
 
 #define BC28_RESET_N_PIN              5
 
@@ -20,18 +22,23 @@ typedef struct {
     uint8_t  data[AIOT_UART_RX_BUFFER_SIZE];
     uint16_t end;
 } aiot_uart_rx_buffer_t;
-
+/* AT设备句柄 */
 extern at_device_t bc26_at_cmd;
 extern aiot_os_al_t g_aiot_rtthread_api;
 extern aiot_net_al_t g_aiot_net_at_api;
-
 at_device_t *at_dev = &bc26_at_cmd;
+/* cJSON 接口 */
+cJSON_Hooks cjson_hooks;
 /* 串口设备句柄 */
 static rt_device_t serial = RT_NULL;
+/* 串口接收信号量 */
 static rt_sem_t rx_notice = RT_NULL;
-static rt_size_t rx_size = 0;
-
+/* 串口接收缓冲 */
 static aiot_uart_rx_buffer_t aiot_rx_buffer = {0};
+/* 内存池 */
+static struct rt_mempool aiot_mp;
+static uint8_t aiot_mp_pool[AIOT_MEMPOOL_SIZE] = {0};
+rt_mp_t aiot_mp_handle = &aiot_mp;
 
 static void bc28_reset(void)
 {
@@ -52,7 +59,6 @@ static rt_err_t at_uart_rx(rt_device_t dev, rt_size_t size)
     /* 串口接收到数据后产生中断，调用此回调函数，然后发送接收信号量 */
     if(size > 0)
     {
-        rx_size = size;
         rt_sem_release(rx_notice);
     }
     return RT_EOK;
@@ -76,9 +82,6 @@ static void aiot_uart_rx_thread_entry(void *parameter)
         aiot_rx_buffer.end = 0;
         do
         {
-            // size = rt_device_read(serial, 0,
-            //                     aiot_rx_buffer.data + aiot_rx_buffer.end, 
-            //                     (rx_size > 0)? rx_size :(AIOT_UART_RX_BUFFER_SIZE - aiot_rx_buffer.end));
             size = rt_device_read(serial, 0, aiot_rx_buffer.data + aiot_rx_buffer.end, 1);
             if (size > 0)
             {
@@ -101,7 +104,15 @@ int32_t at_uart_tx(uint8_t *p_data, uint16_t len, uint32_t timeout)
 rt_int32_t at_rtt_init(void)
 {
     rt_uint16_t ret_size = 0, i = 0;
+
     LOG_D("at_rtt_init");
+    /* 初始化内存池 */
+    rt_mp_init(&aiot_mp, "aiot_mp", &aiot_mp_pool[0], AIOT_MEMPOOL_SIZE, 4);
+
+    /* 初始化cJSON接口 */
+    cjson_hooks.malloc_fn = g_aiot_rtthread_api.malloc;
+    cjson_hooks.free_fn = g_aiot_rtthread_api.free;
+    cJSON_InitHooks(&cjson_hooks);
 
     /* ----------设置设备系统接口及网络接口--------------- */
     aiot_install_os_api(&g_aiot_rtthread_api);
