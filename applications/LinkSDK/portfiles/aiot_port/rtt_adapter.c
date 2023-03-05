@@ -14,9 +14,10 @@
 #define AIOT_AT_PORT_NAME "uart3"   /* 串口设备名称 */
 #define AIOT_UART_RX_BUFFER_SIZE 256
 
+#define BC28_RESET_N_PIN              5
+
 typedef struct {
     uint8_t  data[AIOT_UART_RX_BUFFER_SIZE];
-    uint16_t start;
     uint16_t end;
 } aiot_uart_rx_buffer_t;
 
@@ -28,8 +29,21 @@ at_device_t *at_dev = &bc26_at_cmd;
 /* 串口设备句柄 */
 static rt_device_t serial = RT_NULL;
 static rt_sem_t rx_notice = RT_NULL;
+static rt_size_t rx_size = 0;
 
 static aiot_uart_rx_buffer_t aiot_rx_buffer = {0};
+
+static void bc28_reset(void)
+{
+    rt_pin_mode(BC28_RESET_N_PIN, PIN_MODE_OUTPUT);
+    rt_pin_write(BC28_RESET_N_PIN, PIN_HIGH);
+
+    rt_thread_mdelay(300);
+
+    rt_pin_write(BC28_RESET_N_PIN, PIN_LOW);
+
+    rt_thread_mdelay(1000);
+}
 
 /* 接收数据回调函数 */
 static rt_err_t at_uart_rx(rt_device_t dev, rt_size_t size)
@@ -38,6 +52,7 @@ static rt_err_t at_uart_rx(rt_device_t dev, rt_size_t size)
     /* 串口接收到数据后产生中断，调用此回调函数，然后发送接收信号量 */
     if(size > 0)
     {
+        rx_size = size;
         rt_sem_release(rx_notice);
     }
     return RT_EOK;
@@ -48,7 +63,6 @@ static void aiot_uart_rx_thread_entry(void *parameter)
 {
     rt_err_t result;
     rt_size_t size;
-    rt_uint8_t ch;
 
     /* 从设备中读取数据 */
     while (1)
@@ -59,30 +73,20 @@ static void aiot_uart_rx_thread_entry(void *parameter)
             LOG_E("take rx_notice failed!");
             return;
         }
-        // do
-        // {
-        //     size = rt_device_read(serial, 0, aiot_rx_buffer.data + aiot_rx_buffer.end, 1);
-        //     if (size > 0)
-        //     {
-        //         aiot_at_hal_recv_handle(aiot_rx_buffer.data + aiot_rx_buffer.end, size);
-        //         aiot_rx_buffer.end += size;
-        //         if (aiot_rx_buffer.end >= AIOT_UART_RX_BUFFER_SIZE)
-        //         {
-        //             aiot_rx_buffer.start = 0;
-        //             aiot_rx_buffer.end = 0;
-        //         }
-        //         if(aiot_rx_buffer.data[aiot_rx_buffer.end - 1] == '\n')
-        //         {
-        //             LOG_D("[rx]: %.*s", aiot_rx_buffer.end - aiot_rx_buffer.start, aiot_rx_buffer.data + aiot_rx_buffer.start);
-        //             aiot_rx_buffer.start = 0;
-        //             aiot_rx_buffer.end = 0;
-        //         }
-        //     }
-        // } while (size > 0);
-        while(rt_device_read(serial, 0, &ch, 1) > 0)
+        aiot_rx_buffer.end = 0;
+        do
         {
-            aiot_at_hal_recv_handle(&ch, 1);
-        }
+            // size = rt_device_read(serial, 0,
+            //                     aiot_rx_buffer.data + aiot_rx_buffer.end, 
+            //                     (rx_size > 0)? rx_size :(AIOT_UART_RX_BUFFER_SIZE - aiot_rx_buffer.end));
+            size = rt_device_read(serial, 0, aiot_rx_buffer.data + aiot_rx_buffer.end, 1);
+            if (size > 0)
+            {
+                aiot_at_hal_recv_handle(aiot_rx_buffer.data + aiot_rx_buffer.end, size);
+                aiot_rx_buffer.end += size;
+            }
+        } while (size > 0 && aiot_rx_buffer.end < AIOT_UART_RX_BUFFER_SIZE);
+        rt_kprintf("%.*s", aiot_rx_buffer.end, aiot_rx_buffer.data);
         rt_sem_control(rx_notice, RT_IPC_CMD_RESET, RT_NULL);
     }
 }
@@ -129,22 +133,25 @@ rt_int32_t at_rtt_init(void)
     }
 
     /* 以 INT 接收及轮询发送方式打开串口设备 */
-    if (rt_device_open(serial, RT_DEVICE_FLAG_INT_RX) != RT_EOK)
+    if (rt_device_open(serial, RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_RDWR) != RT_EOK)
     {
         LOG_E("open %s failed!", AIOT_AT_PORT_NAME);
         return -RT_ERROR;
     }
     /* 唤醒 AT 模块 */
+    bc28_reset();
     rt_memset(&aiot_rx_buffer, 0, sizeof(aiot_uart_rx_buffer_t));
     for(i = 0; i < 10; i++)
     {
         rt_device_write(serial, 0, "AT\r\n", 4);
+        LOG_D("[tx]: AT");
         rt_thread_mdelay(100);
     }
     // 清空串口缓存
     do
     {
         ret_size = rt_device_read(serial, 0, aiot_rx_buffer.data, AIOT_UART_RX_BUFFER_SIZE);
+        LOG_D("[rx]: %.*s", ret_size, aiot_rx_buffer.data);
     } while (ret_size > 0);
     rt_memset(&aiot_rx_buffer, 0, sizeof(aiot_uart_rx_buffer_t));
     /* 设置接收回调函数 */
