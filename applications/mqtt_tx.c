@@ -30,13 +30,13 @@ static void error_signal_handler(int signo);
 
 static struct physio_param param = {0};
 static cJSON *payload_json = RT_NULL, *params_json = RT_NULL;
+static char payload[PAYLOAD_SIZE] = {0};
 
 extern rt_mq_t param_mq_handle;
 
 void mqtt_tx_thread(void *parameter)
 {
     rt_err_t result;
-    char *payload = RT_NULL;
 
     RT_ASSERT(param_mq_handle != RT_NULL);
     // install signal handler of error
@@ -71,13 +71,14 @@ void mqtt_tx_thread(void *parameter)
             LOG_D("diastolic: %d", param.diastolic);
             LOG_D("heart_rate: %d", param.heart_rate);
             LOG_D("blood_oxygen: %d", param.blood_oxygen);
-            LOG_D("temperature: %f", param.temperature);
+            LOG_D("temperature: %d.%02d", (int)param.temperature, (int)((param.temperature - (int)param.temperature) * 100));
             cJSON_ReplaceItemInObject(params_json, "BodyTemp", cJSON_CreateNumber(param.temperature));
             cJSON_ReplaceItemInObject(params_json, "HeartRate", cJSON_CreateNumber(param.heart_rate));
             cJSON_ReplaceItemInObject(params_json, "SystolicBp", cJSON_CreateNumber(param.systolic));
             cJSON_ReplaceItemInObject(params_json, "DiastolicBp", cJSON_CreateNumber(param.diastolic));
             cJSON_ReplaceItemInObject(params_json, "BloodOxygen", cJSON_CreateNumber(param.blood_oxygen));
-            payload = cJSON_PrintUnformatted(payload_json);
+            memset(payload, 0, PAYLOAD_SIZE);
+            cJSON_PrintPreallocated(payload_json, payload, PAYLOAD_SIZE, 0);
             LOG_D("payload: %s", payload);
             if(mqtt_wrapper.mqtt_publish != RT_NULL)
             {
@@ -87,13 +88,11 @@ void mqtt_tx_thread(void *parameter)
                     LOG_E("mqtt publish failed: %d", result);
                 }
             }
+
         }
     }
 __exit:
-    if(payload != RT_NULL)
-    {
-        rt_free(payload);
-    }
+    LOG_E("mqtt tx thread exit");
     rt_thread_kill(zignee_rx_thread_handle, ERROR_SIGNAL);
     rt_thread_kill(rt_thread_self(), ERROR_SIGNAL);
 }
