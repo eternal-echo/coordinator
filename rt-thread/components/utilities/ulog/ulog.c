@@ -447,7 +447,7 @@ void ulog_output_to_all_backend(rt_uint32_t level, const char *tag, rt_bool_t is
         {
             /* recalculate the log start address and log size when backend not supported color */
             rt_size_t color_info_len = 0, output_size = size;
-            char *output_log = log;
+            const char *output_log = log;
 
             if (color_output_info[level] != RT_NULL)
                 color_info_len = rt_strlen(color_output_info[level]);
