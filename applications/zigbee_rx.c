@@ -12,7 +12,7 @@
 #include <rtdevice.h>
 #include <board.h>
 
-#define LOG_TAG    "rx"
+#define LOG_TAG    "APP.rx"
 #define LOG_LVL    DBG_LOG
 #include <rtdbg.h>
 
@@ -33,14 +33,12 @@ void zignee_rx_thread(void *parameter)
     param.temperature = 36.5;
     while(work_flag >= 0)
     {
-        result = rt_mq_send(param_mq_handle, &param, sizeof(param));
-        if(result == RT_EOK)
+        result = rt_mq_send_wait(param_mq_handle, &param, sizeof(param), RT_WAITING_FOREVER);
+        if(result != RT_EOK)
         {
-            LOG_D("send data success");
-        }
-        else
-        {
-            LOG_E("send data failed");
+            LOG_E("send param to mq failed: %d", result);
+            work_flag = -1;
+            return;
         }
         rt_thread_mdelay(1000);
         param.node_id++;

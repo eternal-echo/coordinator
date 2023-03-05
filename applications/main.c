@@ -28,7 +28,7 @@ rt_int8_t work_flag = 0;
 
 int main(void)
 {
-    param_mq_handle = rt_mq_create("param_mq", sizeof(struct physio_param), 10, RT_IPC_FLAG_FIFO);
+    param_mq_handle = rt_mq_create("param_mq", sizeof(struct physio_param), 2, RT_IPC_FLAG_FIFO);
     if(param_mq_handle == RT_NULL)
     {
         LOG_E("create param mq failed");

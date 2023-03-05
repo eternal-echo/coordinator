@@ -19,7 +19,7 @@
 #include "aiot_subdev_api.h"
 #include "cJSON.h"
 
-#define LOG_TAG    "tx"
+#define LOG_TAG    "APP.tx"
 #define LOG_LVL    DBG_LOG
 #include <rtdbg.h>
 
