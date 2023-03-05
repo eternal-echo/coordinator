@@ -34,7 +34,7 @@ int main(void)
         LOG_E("create param mq failed");
         return -1;
     }
-    zignee_rx_thread_handle = rt_thread_create("zignee_rx", zignee_rx_thread, RT_NULL, 512, 24, 10);
+    zignee_rx_thread_handle = rt_thread_create("zigbeerx", zignee_rx_thread, RT_NULL, 512, 24, 10);
     if(zignee_rx_thread_handle != RT_NULL)
     {
         rt_thread_startup(zignee_rx_thread_handle);
@@ -44,7 +44,7 @@ int main(void)
         LOG_E("create zignee_rx thread failed");
         return -1;
     }
-    mqtt_tx_thread_handle = rt_thread_create("mqtt_tx", mqtt_tx_thread, RT_NULL, 2048, 25, 10);
+    mqtt_tx_thread_handle = rt_thread_create("mqtttx", mqtt_tx_thread, RT_NULL, 2048, 4, 10);
     if(mqtt_tx_thread_handle != RT_NULL)
     {
         rt_thread_startup(mqtt_tx_thread_handle);
