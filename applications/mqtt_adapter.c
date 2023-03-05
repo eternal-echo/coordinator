@@ -282,7 +282,7 @@ int32_t demo_mqtt_start(void **handle)
 
     *handle = ali_handle.mqtt;
 
-    return 0;
+    return RT_EOK;
 }
 
 int32_t demo_mqtt_stop(void **handle)
@@ -425,7 +425,7 @@ static int mqtt_connect(mqtt_adapter_t *adapter)
     }
 
     rt_thread_mdelay(2000);
-    return res;
+    return RT_EOK;
 }
 
 static int mqtt_disconnect(mqtt_adapter_t *adapter)
@@ -452,18 +452,19 @@ static int mqtt_disconnect(mqtt_adapter_t *adapter)
         return -1;
     }
 
-    return 0;
+    return RT_EOK;
 }
 
 static int mqtt_publish(mqtt_adapter_t *adapter, const char *topic, const char *payload, rt_size_t len)
 {
     int32_t res = STATE_SUCCESS;
+    RT_ASSERT(adapter && topic && payload && len);
     res = aiot_mqtt_pub(ali_handle.mqtt, (char *)topic, (uint8_t *)payload, len, 0);
     if (res < 0) {
         LOG_E("aiot_mqtt_pub failed, res: -0x%04X", -res);
         return -1;
     }
-		return res;
+    return RT_EOK;
     /* 子设备订阅自定义topic. topic中填入子设备自己的product_key, device_name */
     /*
     {
