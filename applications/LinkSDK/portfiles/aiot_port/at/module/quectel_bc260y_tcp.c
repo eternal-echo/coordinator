@@ -22,6 +22,7 @@ static core_at_cmd_item_t at_connect_cmd_table[] = {
     {   /* 建立TCP连接, TODO: aiot_at_nwk_connect接口会组织此AT命令 */
         .fmt = "AT+QIOPEN=0,%d,\"TCP\",\"%s\",%d,0,1\r\n",
         .rsp = "+QIOPEN",
+        .timeout_ms = 10000,
     },
 };
 
@@ -30,6 +31,7 @@ static core_at_cmd_item_t at_send_cmd_table[] = {
     {
         .fmt = "AT+QISEND=%d,%d\r\n",
         .rsp = ">",
+        .timeout_ms = 10000,
     },
     {
         /* 纯数据，没有格式*/

@@ -217,7 +217,7 @@ static int32_t core_at_wait_resp(const core_at_cmd_item_t *cmd)
     int32_t res = STATE_AT_GET_RSP_FAILED;
     at_rsp_result_t rsp_result = AT_RSP_SUCCESS;
     char rsp[AIOT_AT_RSP_LEN_MAXIMUM] = {0};
-    uint64_t timeout_start = os_api->time();
+    static uint64_t timeout_start = 0;
     uint32_t timeout_ms = 0;
     uint32_t used = 0, total_len = 0;
 
@@ -227,6 +227,7 @@ static int32_t core_at_wait_resp(const core_at_cmd_item_t *cmd)
         timeout_ms = cmd->timeout_ms;
     }
     memset(rsp, 0, sizeof(rsp));
+    timeout_start = os_api->time();
     do {
         used = core_ringbuf_get_occupy(&at_handle.rsp_rb);
         if(used <= 0) {
@@ -256,7 +257,6 @@ static int32_t core_at_wait_resp(const core_at_cmd_item_t *cmd)
             res = STATE_AT_GET_RSP_FAILED;
             break;
         }
-
     } while ((os_api->time() - timeout_start) < timeout_ms);
 
     return res;
@@ -663,7 +663,7 @@ static int32_t core_at_recv_prefix_match(const char *data, uint32_t size)
     if(data_recv_urc_head == NULL) {
         return res;
     }
-    /*查到报文头，但是报文头前面还有数据没有没消费*/
+    /*查到报文头，但是报文头前面还有数据没有被消费*/
     last_line = strstr(data, "\r\n");
     if(last_line != NULL && last_line < data_recv_urc_head) {
         return res;
@@ -744,7 +744,7 @@ static int32_t core_at_hal_process(uint8_t *data, uint32_t size)
     if(len > 0) {
         /*计算新的数据，被消费的长度*/
         len = len - (at_handle.rsp_buf_offset - size);
-        printf("id %d, len %d, res %d\r\n", at_handle.reader.curr_link_id, at_handle.reader.data_len, len);
+        rt_kprintf("id %d, len %d, res %d\r\n", at_handle.reader.curr_link_id, at_handle.reader.data_len, len);
         memset(at_handle.rsp_buf, 0, at_handle.rsp_buf_offset);
         at_handle.rsp_buf_offset = 0;
 
