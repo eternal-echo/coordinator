@@ -49,7 +49,7 @@ extern "C" {
 #define AIOT_AT_DATA_RB_SIZE_DEFAULT        (4096)       /* 内部网络数据接收缓冲区大小,用户可根据接收数据流量的大小调整 */
 #define AIOT_AT_RSP_RB_SIZE_DEFAULT         (4096)       /* 内部应答报文接受缓冲区大小,用户可根据接收数据流量的大小调整 */
 #define AIOT_AT_CMD_RETRY_TIME              (3)         /* AT命令发送重试最大次数 */
-#define AIOT_AT_RINGBUF_RETRY_INTERVAL      (5)     /* RINGBUF数据长度检查间隔时间 */
+#define AIOT_AT_RINGBUF_RETRY_INTERVAL      (500)     /* RINGBUF数据长度检查间隔时间 */
 #define AIOT_AT_SOCKET_NUM                  (5)         /* 支持的数据链路数量 */
 #define AIOT_AT_MAX_PACKAGE_SIZE            (1460)      /* 一帧报文最大的数据长度*/
 #define AT_SOCKET_ID_START                  (1)

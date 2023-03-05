@@ -764,6 +764,7 @@ static int32_t core_at_hal_process(uint8_t *data, uint32_t size)
         }
 
         core_at_process_line(at_handle.rsp_buf, line_len);
+        rt_kprintf("[rx]: %s\r\n", at_handle.rsp_buf);
         /*计算消费的数据长度*/
         res =  line_len - (at_handle.rsp_buf_offset - size);
         memset(at_handle.rsp_buf, 0, at_handle.rsp_buf_offset);
