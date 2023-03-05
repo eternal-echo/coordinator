@@ -7,10 +7,10 @@ static core_at_cmd_item_t at_ip_init_cmd_table[] = {
         .cmd = "AT\r\n",
         .rsp = "OK",
     },
-    {   /* 开启回显 */
-        .cmd = "ATE1\r\n",
-        .rsp = "OK",
-    },
+    // {   /* 开启回显 */
+    //     .cmd = "ATE1\r\n",
+    //     .rsp = "OK",
+    // },
     {   /* 禁用休眠模式 */
         .cmd = "AT+QSCLK=0\r\n",
         .rsp = "OK",
