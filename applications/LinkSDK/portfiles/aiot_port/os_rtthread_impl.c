@@ -22,7 +22,7 @@ void __free(void *ptr) {
  * @brief 获取当前的时间戳，SDK用于差值计算
  */
 uint64_t __time(void) {
-    return (uint64_t)(rt_tick_get() * RT_TICK_PER_SECOND);
+    return (uint64_t)(rt_tick_get());
 }
 /**
  * @brief 睡眠指定的毫秒数
