@@ -9,7 +9,7 @@
 #include <cJSON.h>
 
 #define LOG_TAG "at_port"
-#define LOG_LVL DBG_LOG
+#define LOG_LVL DBG_INFO
 #include <rtdbg.h>
 
 #define AIOT_AT_PORT_NAME "uart3"   /* 串口设备名称 */
@@ -89,7 +89,7 @@ static void aiot_uart_rx_thread_entry(void *parameter)
                 aiot_rx_buffer.end += size;
             }
         } while (size > 0 && aiot_rx_buffer.end < AIOT_UART_RX_BUFFER_SIZE);
-        rt_kprintf("%.*s", aiot_rx_buffer.end, aiot_rx_buffer.data);
+        // rt_kprintf("%.*s", aiot_rx_buffer.end, aiot_rx_buffer.data);
         rt_sem_control(rx_notice, RT_IPC_CMD_RESET, RT_NULL);
     }
 }
@@ -212,6 +212,7 @@ static int at_client_dev_init(void)
     int result = RT_EOK;
 
     struct serial_configure config = RT_SERIAL_CONFIG_DEFAULT;
+    serial = rt_device_find(AIOT_AT_PORT_NAME);
 
     config.baud_rate = BAUD_RATE_9600;
     config.data_bits = DATA_BITS_8;
@@ -220,7 +221,7 @@ static int at_client_dev_init(void)
     config.parity    = PARITY_NONE;
 
     rt_device_control(serial, RT_DEVICE_CTRL_CONFIG, &config);
-    rt_device_close(serial);
+    rt_device_open(serial, RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_RDWR);
 
     /* initialize AT client */
     result = at_client_init(AIOT_AT_PORT_NAME, 512);

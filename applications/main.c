@@ -27,11 +27,20 @@ rt_mq_t param_mq_handle = RT_NULL;
 
 int main(void)
 {
+    while(1)
+    {
+        rt_thread_mdelay(1000);
+    }
+    return RT_EOK;
+}
+
+static int gateway_start(void)
+{
     param_mq_handle = rt_mq_create("param_mq", sizeof(struct physio_param), 2, RT_IPC_FLAG_FIFO);
     if(param_mq_handle == RT_NULL)
     {
         LOG_E("create param mq failed");
-        return -1;
+        goto exit;
     }
     zignee_rx_thread_handle = rt_thread_create("zigbeerx", zignee_rx_thread, RT_NULL, 512, 24, 10);
     if(zignee_rx_thread_handle != RT_NULL)
@@ -41,9 +50,9 @@ int main(void)
     else
     {
         LOG_E("create zignee_rx thread failed");
-        return -1;
+        goto exit;
     }
-    mqtt_tx_thread_handle = rt_thread_create("mqtttx", mqtt_tx_thread, RT_NULL, 2048, 4, 10);
+    mqtt_tx_thread_handle = rt_thread_create("mqtttx", mqtt_tx_thread, RT_NULL, 4096, 4, 10);
     if(mqtt_tx_thread_handle != RT_NULL)
     {
         rt_thread_startup(mqtt_tx_thread_handle);
@@ -51,16 +60,12 @@ int main(void)
     else
     {
         LOG_E("create mqtt_tx thread failed");
-        return -1;
-    }
-
-    while (1)
-    {
-        rt_thread_mdelay(500);
+        goto exit;
     }
     return RT_EOK;
 
 exit:
+    LOG_E("exit main thread");
     if(param_mq_handle != RT_NULL)
     {
         rt_mq_delete(param_mq_handle);
@@ -75,3 +80,5 @@ exit:
     }
     return -RT_ERROR;
 }
+
+MSH_CMD_EXPORT(gateway_start, start gateway);
