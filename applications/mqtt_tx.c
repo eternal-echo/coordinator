@@ -35,15 +35,19 @@ void mqtt_tx_thread(void *parameter)
 {
     rt_err_t result;
     char *payload = RT_NULL;
+
     RT_ASSERT(param_mq_handle != RT_NULL);
-    cJSON_AddItemToObject(payload_json, "id", cJSON_CreateString("1"));
-    cJSON_AddItemToObject(payload_json, "version", cJSON_CreateString("1.0"));
+    payload_json = cJSON_CreateObject();
+    cJSON_AddStringToObject(payload_json, "id", "1");
+    cJSON_AddStringToObject(payload_json, "method", "thing.event.property.post");
+    cJSON_AddStringToObject(payload_json, "version", "1.0.0");
     params_json = cJSON_CreateObject();
-    cJSON_AddItemToObject(params_json, "BodyTemp", cJSON_CreateNumber(param.temperature));
-    cJSON_AddItemToObject(params_json, "HeartRate", cJSON_CreateNumber(param.heart_rate));
-    cJSON_AddItemToObject(params_json, "SystolicBp", cJSON_CreateNumber(param.systolic));
-    cJSON_AddItemToObject(params_json, "DiastolicBp", cJSON_CreateNumber(param.diastolic));
-    cJSON_AddItemToObject(params_json, "BloodOxygen", cJSON_CreateNumber(param.blood_oxygen));
+    // cJSON_AddItemToObject(params_json, "BodyTemp", cJSON_CreateNumber(param.temperature));
+    cJSON_AddNumberToObject(params_json, "BodyTemp", param.temperature);
+    cJSON_AddNumberToObject(params_json, "HeartRate", param.heart_rate);
+    cJSON_AddNumberToObject(params_json, "SystolicBp", param.systolic);
+    cJSON_AddNumberToObject(params_json, "DiastolicBp", param.diastolic);
+    cJSON_AddNumberToObject(params_json, "BloodOxygen", param.blood_oxygen);
     cJSON_AddItemToObject(payload_json, "params", params_json);
     if(mqtt_wrapper.mqtt_connect != RT_NULL)
     {
