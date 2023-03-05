@@ -48,6 +48,7 @@ void zignee_rx_thread(void *parameter)
         param.node_id++;
     }
 __exit:
+    LOG_E("zignee rx thread exit");
     rt_thread_kill(mqtt_tx_thread_handle, ERROR_SIGNAL);
     rt_thread_kill(rt_thread_self(), ERROR_SIGNAL);
 }
