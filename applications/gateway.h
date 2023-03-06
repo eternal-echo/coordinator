@@ -13,6 +13,13 @@
 
 #include <rtthread.h>
 
+// error signal
+#define ERROR_SIGNAL    SIGUSR1
+// buffer size of cJson payload
+#define PAYLOAD_SIZE    256
+// 子设备节点数量
+#define NODE_NUM        2
+
 // 生理参数数据
 struct physio_param
 {
@@ -24,5 +31,6 @@ struct physio_param
     float temperature;   // 体温
 };
 
-extern rt_int8_t work_flag;
+extern rt_thread_t mqtt_tx_thread_handle;
+extern rt_thread_t zignee_rx_thread_handle;
 #endif /* __SENSOR_DATA_H__ */
