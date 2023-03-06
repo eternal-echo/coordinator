@@ -744,7 +744,7 @@ static int32_t core_at_hal_process(uint8_t *data, uint32_t size)
     if(len > 0) {
         /*计算新的数据，被消费的长度*/
         len = len - (at_handle.rsp_buf_offset - size);
-        rt_kprintf("id %d, len %d, res %d\r\n", at_handle.reader.curr_link_id, at_handle.reader.data_len, len);
+        // rt_kprintf("id %d, len %d, res %d\r\n", at_handle.reader.curr_link_id, at_handle.reader.data_len, len);
         memset(at_handle.rsp_buf, 0, at_handle.rsp_buf_offset);
         at_handle.rsp_buf_offset = 0;
 
@@ -764,7 +764,7 @@ static int32_t core_at_hal_process(uint8_t *data, uint32_t size)
         }
 
         core_at_process_line(at_handle.rsp_buf, line_len);
-        rt_kprintf("[rx]: %s\r\n", at_handle.rsp_buf);
+        // rt_kprintf("[rx]: %s\r\n", at_handle.rsp_buf);
         /*计算消费的数据长度*/
         res =  line_len - (at_handle.rsp_buf_offset - size);
         memset(at_handle.rsp_buf, 0, at_handle.rsp_buf_offset);
