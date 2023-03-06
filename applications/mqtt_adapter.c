@@ -31,7 +31,7 @@
 
 struct subdev_topic
 {
-    char post[40];
+    char post[70];
 };
 
 struct aiot_handle
@@ -547,5 +547,5 @@ static int mqtt_publish(mqtt_adapter_t *adapter, const char *topic, const char *
 
 static int subdev_publish(mqtt_adapter_t *adapter, const int id, const char *payload, rt_size_t len)
 {
-    mqtt_publish(adapter, ali_handle.topics[id].post, payload, len);
+    return mqtt_publish(adapter, ali_handle.topics[id].post, payload, len);
 }
