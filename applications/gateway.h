@@ -17,6 +17,8 @@
 #define ERROR_SIGNAL    SIGUSR1
 // buffer size of cJson payload
 #define PAYLOAD_SIZE    256
+// 子设备节点数量
+#define NODE_NUM        2
 
 // 生理参数数据
 struct physio_param

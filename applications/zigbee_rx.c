@@ -27,24 +27,35 @@ extern rt_mq_t param_mq_handle;
 void zignee_rx_thread(void *parameter)
 {
     rt_err_t result;
-
+    rt_uint16_t cnt = 0, id = 0;
     // install signal handler of error
     rt_signal_install(ERROR_SIGNAL, error_signal_handler);
-    param.node_id = 1;
-    param.systolic = 120;
-    param.diastolic = 80;
-    param.heart_rate = 60;
-    param.blood_oxygen = 98;
-    param.temperature = 36.5;
     while(1)
     {
-        result = rt_mq_send_wait(param_mq_handle, &param, sizeof(param), RT_WAITING_FOREVER);
-        if(result != RT_EOK)
+        param.systolic = 120;
+        param.diastolic = 80;
+        param.heart_rate = 60;
+        param.blood_oxygen = 98;
+        param.temperature = 36.5;
+        for(cnt = 0 ; cnt < 10 ; cnt++)
         {
-            LOG_E("send param to mq failed: %d", result);
-            goto __exit;
+            for(id = 0; id < NODE_NUM; id++)
+            {
+                param.node_id = id;
+                result = rt_mq_send_wait(param_mq_handle, &param, sizeof(param), RT_WAITING_FOREVER);
+                if(result != RT_EOK)
+                {
+                    LOG_E("send param to mq failed: %d", result);
+                    goto __exit;
+                }
+                rt_thread_mdelay(1000);
+            }
+            param.systolic += 1;
+            param.diastolic += 1;
+            param.heart_rate += 1;
+            param.blood_oxygen -= 1;
+            param.temperature += 0.1;
         }
-        rt_thread_mdelay(1000);
         param.node_id++;
     }
 __exit:
