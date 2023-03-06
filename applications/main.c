@@ -42,16 +42,6 @@ static int gateway_start(void)
         LOG_E("create param mq failed");
         goto exit;
     }
-    zignee_rx_thread_handle = rt_thread_create("zigbeerx", zignee_rx_thread, RT_NULL, 512, 24, 10);
-    if(zignee_rx_thread_handle != RT_NULL)
-    {
-        rt_thread_startup(zignee_rx_thread_handle);
-    }
-    else
-    {
-        LOG_E("create zignee_rx thread failed");
-        goto exit;
-    }
     mqtt_tx_thread_handle = rt_thread_create("mqtttx", mqtt_tx_thread, RT_NULL, 4096, 4, 10);
     if(mqtt_tx_thread_handle != RT_NULL)
     {
@@ -60,6 +50,16 @@ static int gateway_start(void)
     else
     {
         LOG_E("create mqtt_tx thread failed");
+        goto exit;
+    }
+    zignee_rx_thread_handle = rt_thread_create("zigbeerx", zignee_rx_thread, RT_NULL, 512, 24, 10);
+    if(zignee_rx_thread_handle != RT_NULL)
+    {
+        rt_thread_startup(zignee_rx_thread_handle);
+    }
+    else
+    {
+        LOG_E("create zignee_rx thread failed");
         goto exit;
     }
     return RT_EOK;
