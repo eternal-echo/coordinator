@@ -336,8 +336,8 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
-              <Define>USE_HAL_DRIVER, __CLK_TCK=RT_TICK_PER_SECOND, RT_USING_ARM_LIBC, __RTTHREAD__, STM32F103xE</Define>
+              <MiscControls>--diag_suppress=1</MiscControls>
+              <Define>USE_HAL_DRIVER, __CLK_TCK=RT_TICK_PER_SECOND, RT_USING_ARM_LIBC, __RTTHREAD__, STM32F103xE, __GNUC__</Define>
               <Undefine></Undefine>
               <IncludePath>applications;.;rt-thread\components\net\at\include;rt-thread\libcpu\arm\common;rt-thread\libcpu\arm\cortex-m3;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;board;board\CubeMX_Config\Inc;libraries\HAL_Drivers;libraries\HAL_Drivers\config;rt-thread\components\finsh;.;rt-thread\include;rt-thread\components\libc\compilers\armlibc;rt-thread\components\libc\compilers\common;rt-thread\components\libc\compilers\common\nogcc;libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Include;libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Inc;libraries\STM32F1xx_HAL\CMSIS\Include;applications\LinkSDK\components\subdev;applications\LinkSDK\core\sysdep;applications\LinkSDK\core\utils;applications\LinkSDK\core;applications\LinkSDK\external\libdeflate\lib;applications\LinkSDK\external\libdeflate;applications\LinkSDK\external\mbedtls\include;applications\LinkSDK\external\mbedtls\include\mbedtls;applications\LinkSDK\portfiles\aiot_port\at;applications\LinkSDK\portfiles\aiot_port;rt-thread\components\utilities\ulog</IncludePath>
             </VariousControls>
