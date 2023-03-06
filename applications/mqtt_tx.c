@@ -53,8 +53,14 @@ void mqtt_tx_thread(void *parameter)
     cJSON_AddNumberToObject(params_json, "DiastolicBp", param.diastolic);
     cJSON_AddNumberToObject(params_json, "BloodOxygen", param.blood_oxygen);
     cJSON_AddItemToObject(payload_json, "params", params_json);
-    if(mqtt_wrapper.mqtt_connect != RT_NULL)
+    if(mqtt_wrapper.mqtt_init != RT_NULL && mqtt_wrapper.mqtt_connect != RT_NULL)
     {
+        result = mqtt_wrapper.mqtt_init(&mqtt_wrapper);
+        if(result != RT_EOK)
+        {
+            LOG_E("mqtt init failed: %d", result);
+            goto __exit;
+        }
         result = mqtt_wrapper.mqtt_connect(&mqtt_wrapper);
         if(result != RT_EOK)
         {
@@ -80,9 +86,11 @@ void mqtt_tx_thread(void *parameter)
             memset(payload, 0, PAYLOAD_SIZE);
             cJSON_PrintPreallocated(payload_json, payload, PAYLOAD_SIZE, 0);
             LOG_D("payload: %s", payload);
-            if(mqtt_wrapper.mqtt_publish != RT_NULL)
+            // if(mqtt_wrapper.mqtt_publish != RT_NULL)
+            if(mqtt_wrapper.subdev_publish != RT_NULL)
             {
-                result = mqtt_wrapper.mqtt_publish(&mqtt_wrapper, "/sys/hcixG5BeXXR/node0/thing/event/property/post", payload, strlen(payload));
+                // result = mqtt_wrapper.mqtt_publish(&mqtt_wrapper, "/sys/hcixG5BeXXR/node0/thing/event/property/post", payload, strlen(payload));
+                result = mqtt_wrapper.subdev_publish(&mqtt_wrapper, param.node_id, payload, strlen(payload));
                 if(result != RT_EOK)
                 {
                     LOG_E("mqtt publish failed: %d", result);

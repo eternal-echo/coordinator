@@ -19,33 +19,38 @@
 #include "aiot_subdev_api.h"
 #include "cJSON.h"
 
+#include <gateway.h>
+
 #define DBG_TAG "mqtt_adapter"
 #define DBG_LVL DBG_LOG
 #include <rtdbg.h>
 
-static struct aiot_handle
-{
-    void *mqtt;
-    void *subdev;
-} ali_handle;
-
-static int mqtt_connect(mqtt_adapter_t *adapter);
-static int mqtt_disconnect(mqtt_adapter_t *adapter);
-static int mqtt_publish(mqtt_adapter_t *adapter, const char *topic, const char *payload, rt_size_t len);
-
-/* TODO: 替换为自己设备的三元组 */
 #define PRODUCT_KEY 	"hcixxJENrUz"
 #define DEVICE_NAME 	"coordinator0"
 #define DEVICE_SECRET "bafdf3991aeab4fe2991e3d281a9f725"
+
+struct subdev_topic
+{
+    char post[40];
+};
+
+struct aiot_handle
+{
+    void *mqtt;
+    void *subdev;
+    struct subdev_topic topics[NODE_NUM];
+};
+
+static int mqtt_init(mqtt_adapter_t *adapter);
+static int mqtt_connect(mqtt_adapter_t *adapter);
+static int mqtt_disconnect(mqtt_adapter_t *adapter);
+static int mqtt_publish(mqtt_adapter_t *adapter, const char *topic, const char *payload, rt_size_t len);
+static int subdev_publish(mqtt_adapter_t *adapter, const int id, const char *payload, rt_size_t len);
+
+/* TODO: 替换为自己设备的三元组 */
 char *product_key       = PRODUCT_KEY;
 char *device_name       = DEVICE_NAME;
 char *device_secret     = DEVICE_SECRET;
-
-mqtt_adapter_t mqtt_wrapper = {
-    .mqtt_connect = mqtt_connect,
-    .mqtt_disconnect = mqtt_disconnect,
-    .mqtt_publish = mqtt_publish,
-};
 
 /*
     TODO: 替换为自己实例的接入点
@@ -76,7 +81,7 @@ static uint8_t g_mqtt_process_thread_running = 0;
 static uint8_t g_mqtt_recv_thread_running = 0;
 
 /* TODO: 替换为用户自己子设备设备的三元组 */
-aiot_subdev_dev_t g_subdev[] = {
+aiot_subdev_dev_t g_subdev[NODE_NUM] = {
     {
         "hcixG5BeXXR",
         "node0",
@@ -91,6 +96,8 @@ aiot_subdev_dev_t g_subdev[] = {
     },
 };
 
+static struct aiot_handle ali_handle = {0};
+
 /* TODO: 如果要关闭日志, 就把这个函数实现为空, 如果要减少日志, 可根据code选择不打印
  *
  * 例如: [1577589489.033][LK-0317] subdev_basic_demo&${SubdevProductKey_1}
@@ -98,6 +105,16 @@ aiot_subdev_dev_t g_subdev[] = {
  * 上面这条日志的code就是0317(十六进制), code值的定义见core/aiot_state_api.h
  *
  */
+
+
+mqtt_adapter_t mqtt_wrapper = {
+    .mqtt_init = mqtt_init,
+    .mqtt_connect = mqtt_connect,
+    .mqtt_disconnect = mqtt_disconnect,
+    .mqtt_publish = mqtt_publish,
+    .subdev_publish = subdev_publish,
+    .user_data = &ali_handle
+};
 
 /* 日志回调函数, SDK的日志会从这里输出 */
 static int32_t demo_state_logcb(int32_t code, char *message)
@@ -354,9 +371,9 @@ void demo_subdev_recv_handler(void *handle, const aiot_subdev_recv_t *packet, vo
     }
 }
 
-static int mqtt_connect(mqtt_adapter_t *adapter)
+static int mqtt_init(mqtt_adapter_t *adapter)
 {
-    int32_t res = STATE_SUCCESS;
+    int res = 0, i = 0;
     ali_handle.mqtt = NULL;
     ali_handle.subdev = NULL;
 
@@ -372,6 +389,22 @@ static int mqtt_connect(mqtt_adapter_t *adapter)
     aiot_sysdep_set_portfile(&g_aiot_sysdep_portfile);
     /* 配置SDK的日志输出 */
     aiot_state_set_logcb(demo_state_logcb);
+
+    /* 初始化subdev topic */
+    for(i = 0; i < NODE_NUM; i++)
+    {
+        // "/sys/hcixG5BeXXR/node0/thing/event/property/post"
+        rt_snprintf(ali_handle.topics[i].post, sizeof(ali_handle.topics[i].post),
+             "/sys/%s/%s/thing/event/property/post", g_subdev[i].product_key, g_subdev[i].device_name);
+        LOG_D("post topic: %s", ali_handle.topics[i].post);
+    }
+    return RT_EOK;
+}
+
+static int mqtt_connect(mqtt_adapter_t *adapter)
+{
+    int32_t res = STATE_SUCCESS;
+
     /* 建立MQTT连接, 并开启保活线程和接收线程 */
     res = demo_mqtt_start(&ali_handle.mqtt);
     if (res < 0) {
@@ -510,4 +543,9 @@ static int mqtt_publish(mqtt_adapter_t *adapter, const char *topic, const char *
         }
     }
     */   
+}
+
+static int subdev_publish(mqtt_adapter_t *adapter, const int id, const char *payload, rt_size_t len)
+{
+    mqtt_publish(adapter, ali_handle.topics[id].post, payload, len);
 }
