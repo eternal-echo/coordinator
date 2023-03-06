@@ -260,24 +260,32 @@ int32_t demo_mqtt_start(void **handle)
 
     /* 创建一个单独的线程, 专用于执行aiot_mqtt_process, 它会自动发送心跳保活, 以及重发QoS1的未应答报文 */
     g_mqtt_process_thread_running = 1;
-    g_mqtt_process_thread = rt_thread_create("ali_mqtt_process", demo_mqtt_process_thread, ali_handle.mqtt, 1024, 25, 10);
+    g_mqtt_process_thread = rt_thread_create("ali_process", demo_mqtt_process_thread, ali_handle.mqtt, 1024, 25, 10);
     if(g_mqtt_process_thread == NULL) {
         LOG_E("rt_thread_create demo_mqtt_process_thread failed: %d", res);
         g_mqtt_process_thread_running = 0;
         aiot_mqtt_deinit(&ali_handle.mqtt);
         return -1;
     }
+    else
+    {
+        rt_thread_startup(g_mqtt_process_thread);
+    }
     
 
     /* 创建一个单独的线程用于执行aiot_mqtt_recv, 它会循环收取服务器下发的MQTT消息, 并在断线时自动重连 */
     g_mqtt_recv_thread_running = 1;
-    g_mqtt_recv_thread = rt_thread_create("ali_mqtt_recv", demo_mqtt_recv_thread, ali_handle.mqtt, 1024, 10, 10);
+    g_mqtt_recv_thread = rt_thread_create("ali_rx", demo_mqtt_recv_thread, ali_handle.mqtt, 1024, 10, 10);
     if(g_mqtt_recv_thread == NULL) {
         LOG_E("rt_thread_create demo_mqtt_recv_thread failed: %d", res);
         g_mqtt_recv_thread_running = 0;
         rt_thread_delete(g_mqtt_process_thread);
         aiot_mqtt_deinit(&ali_handle.mqtt);
         return -1;
+    }
+    else
+    {
+        rt_thread_startup(g_mqtt_recv_thread);
     }
 
     *handle = ali_handle.mqtt;
