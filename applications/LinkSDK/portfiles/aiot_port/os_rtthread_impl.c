@@ -6,19 +6,26 @@
 #include <string.h>
 #include "os_net_interface.h"
 
-extern rt_mp_t aiot_mp_handle;
+#define LOG_TAG "at_port"
+#define LOG_LVL DBG_LOG
+#include <rtdbg.h>
 
 /**
  * @brief 申请内存
  */
 static void* __malloc(uint32_t size) {
-    return rt_mp_alloc(aiot_mp_handle, size);
+    void* ptr = rt_malloc(size);
+    if (ptr == RT_NULL) {
+        LOG_E("malloc failed, size: %d", size);
+        return NULL;
+    }
+    return ptr;
 }
 /**
  * @brief 释放内存
  */
 void __free(void *ptr) {
-    rt_mp_free(ptr);
+    rt_free(ptr);
 }
 /**
  * @brief 获取当前的时间戳，SDK用于差值计算

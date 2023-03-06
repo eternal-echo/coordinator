@@ -14,7 +14,6 @@
 
 #define AIOT_AT_PORT_NAME "uart3"   /* 串口设备名称 */
 #define AIOT_UART_RX_BUFFER_SIZE 256
-#define AIOT_MEMPOOL_SIZE 1024 * 8
 
 #define BC28_RESET_N_PIN              5
 
@@ -37,7 +36,6 @@ static rt_sem_t rx_notice = RT_NULL;
 static aiot_uart_rx_buffer_t aiot_rx_buffer = {0};
 /* 内存池 */
 static struct rt_mempool aiot_mp;
-static uint8_t aiot_mp_pool[AIOT_MEMPOOL_SIZE] = {0};
 rt_mp_t aiot_mp_handle = &aiot_mp;
 
 static void bc28_reset(void)
@@ -106,8 +104,6 @@ rt_int32_t at_rtt_init(void)
     rt_uint16_t ret_size = 0, i = 0;
 
     LOG_D("at_rtt_init");
-    /* 初始化内存池 */
-    rt_mp_init(&aiot_mp, "aiot_mp", &aiot_mp_pool[0], AIOT_MEMPOOL_SIZE, 4);
 
     /* 初始化cJSON接口 */
     cjson_hooks.malloc_fn = g_aiot_rtthread_api.malloc;
