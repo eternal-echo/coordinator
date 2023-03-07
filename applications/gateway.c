@@ -176,7 +176,7 @@ rt_err_t gateway_publish(gateway_t *gw, node_param_t *param)
 #ifdef FINSH_USING_MSH
 static void gateway_test(int argc, char **argv)
 {
-    if(argc == 2)
+    if(argc >= 2)
     {
         if(!strcmp(argv[1], "init"))
         {
@@ -217,19 +217,31 @@ static void gateway_test(int argc, char **argv)
                 list_node_param(&param);
                 gateway_publish(&gateway, &param);
             }
+            else if(argc == 3)
+            {
+                node_param_t param;
+                param.node_id = atoi(argv[2]);
+                param.temperature = 20;
+                param.heart_rate = 20;
+                param.systolic = 20;
+                param.diastolic = 20;
+                param.blood_oxygen = 20;
+                list_node_param(&param);
+                gateway_publish(&gateway, &param);
+            }
             else
             {
-                LOG_E("gateway publish <node_id> <temperature> <heart_rate> <systolic> <diastolic> <blood_oxygen>");
+                LOG_E("gateway publish <node_id> [temperature] [heart_rate] [systolic] [diastolic] [blood_oxygen]");
             }
         }
         else
         {
-            LOG_E("gateway test <init|connect|disconnect|deinit|publish>");
+            LOG_E("gateway <init|connect|disconnect|deinit|publish>");
         }
     }
     else
     {
-        LOG_E("gateway test <init|connect|disconnect|deinit|publish>");
+        LOG_E("gateway <init|connect|disconnect|deinit|publish>");
     }
 }
 MSH_CMD_EXPORT_ALIAS(gateway_test, gateway, gateway test);
