@@ -336,8 +336,8 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls>--diag_suppress=1</MiscControls>
-              <Define>USE_HAL_DRIVER, __CLK_TCK=RT_TICK_PER_SECOND, RT_USING_ARM_LIBC, __RTTHREAD__, STM32F103xE, __GNUC__</Define>
+              <MiscControls></MiscControls>
+              <Define>USE_HAL_DRIVER, __CLK_TCK=RT_TICK_PER_SECOND, RT_USING_ARM_LIBC, __RTTHREAD__, STM32F103xE</Define>
               <Undefine></Undefine>
               <IncludePath>applications;.;rt-thread\components\net\at\include;rt-thread\libcpu\arm\common;rt-thread\libcpu\arm\cortex-m3;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;board;board\CubeMX_Config\Inc;libraries\HAL_Drivers;libraries\HAL_Drivers\config;rt-thread\components\finsh;.;rt-thread\include;rt-thread\components\libc\compilers\armlibc;rt-thread\components\libc\compilers\common;rt-thread\components\libc\compilers\common\nogcc;libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Include;libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Inc;libraries\STM32F1xx_HAL\CMSIS\Include;applications\LinkSDK\components\subdev;applications\LinkSDK\core\sysdep;applications\LinkSDK\core\utils;applications\LinkSDK\core;applications\LinkSDK\external\libdeflate\lib;applications\LinkSDK\external\libdeflate;applications\LinkSDK\external\mbedtls\include;applications\LinkSDK\external\mbedtls\include\mbedtls;applications\LinkSDK\portfiles\aiot_port\at;applications\LinkSDK\portfiles\aiot_port;rt-thread\components\utilities\ulog</IncludePath>
             </VariousControls>
@@ -384,14 +384,9 @@
           <GroupName>Applications</GroupName>
           <Files>
             <File>
-              <FileName>mqtt_adapter.c</FileName>
+              <FileName>gateway.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\mqtt_adapter.c</FilePath>
-            </File>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\main.c</FilePath>
+              <FilePath>applications\gateway.c</FilePath>
             </File>
             <File>
               <FileName>mqtt_tx.c</FileName>
@@ -402,6 +397,16 @@
               <FileName>zigbee_rx.c</FileName>
               <FileType>1</FileType>
               <FilePath>applications\zigbee_rx.c</FilePath>
+            </File>
+            <File>
+              <FileName>mqtt_adapter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\mqtt_adapter.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\main.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -429,11 +434,6 @@
           <GroupName>CPU</GroupName>
           <Files>
             <File>
-              <FileName>backtrace.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\libcpu\arm\common\backtrace.c</FilePath>
-            </File>
-            <File>
               <FileName>showmem.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\libcpu\arm\common\showmem.c</FilePath>
@@ -444,14 +444,19 @@
               <FilePath>rt-thread\libcpu\arm\common\div0.c</FilePath>
             </File>
             <File>
-              <FileName>cpuport.c</FileName>
+              <FileName>backtrace.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\libcpu\arm\cortex-m3\cpuport.c</FilePath>
+              <FilePath>rt-thread\libcpu\arm\common\backtrace.c</FilePath>
             </File>
             <File>
               <FileName>context_rvds.S</FileName>
               <FileType>2</FileType>
               <FilePath>rt-thread\libcpu\arm\cortex-m3\context_rvds.S</FilePath>
+            </File>
+            <File>
+              <FileName>cpuport.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\libcpu\arm\cortex-m3\cpuport.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -469,9 +474,19 @@
               <FilePath>rt-thread\components\drivers\serial\serial.c</FilePath>
             </File>
             <File>
-              <FileName>pipe.c</FileName>
+              <FileName>completion.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\src\pipe.c</FilePath>
+              <FilePath>rt-thread\components\drivers\src\completion.c</FilePath>
+            </File>
+            <File>
+              <FileName>waitqueue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\drivers\src\waitqueue.c</FilePath>
+            </File>
+            <File>
+              <FileName>ringblk_buf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\drivers\src\ringblk_buf.c</FilePath>
             </File>
             <File>
               <FileName>dataqueue.c</FileName>
@@ -484,24 +499,14 @@
               <FilePath>rt-thread\components\drivers\src\ringbuffer.c</FilePath>
             </File>
             <File>
+              <FileName>pipe.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\drivers\src\pipe.c</FilePath>
+            </File>
+            <File>
               <FileName>workqueue.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\components\drivers\src\workqueue.c</FilePath>
-            </File>
-            <File>
-              <FileName>completion.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\src\completion.c</FilePath>
-            </File>
-            <File>
-              <FileName>ringblk_buf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\src\ringblk_buf.c</FilePath>
-            </File>
-            <File>
-              <FileName>waitqueue.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\src\waitqueue.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -564,24 +569,29 @@
           <GroupName>Kernel</GroupName>
           <Files>
             <File>
-              <FileName>ipc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\src\ipc.c</FilePath>
-            </File>
-            <File>
               <FileName>device.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\src\device.c</FilePath>
             </File>
             <File>
-              <FileName>components.c</FileName>
+              <FileName>kservice.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\components.c</FilePath>
+              <FilePath>rt-thread\src\kservice.c</FilePath>
             </File>
             <File>
-              <FileName>mem.c</FileName>
+              <FileName>irq.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\mem.c</FilePath>
+              <FilePath>rt-thread\src\irq.c</FilePath>
+            </File>
+            <File>
+              <FileName>ipc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\src\ipc.c</FilePath>
+            </File>
+            <File>
+              <FileName>memheap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\src\memheap.c</FilePath>
             </File>
             <File>
               <FileName>thread.c</FileName>
@@ -594,24 +604,14 @@
               <FilePath>rt-thread\src\scheduler.c</FilePath>
             </File>
             <File>
-              <FileName>timer.c</FileName>
+              <FileName>idle.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\timer.c</FilePath>
+              <FilePath>rt-thread\src\idle.c</FilePath>
             </File>
             <File>
-              <FileName>irq.c</FileName>
+              <FileName>mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\irq.c</FilePath>
-            </File>
-            <File>
-              <FileName>mempool.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\src\mempool.c</FilePath>
-            </File>
-            <File>
-              <FileName>object.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\src\object.c</FilePath>
+              <FilePath>rt-thread\src\mem.c</FilePath>
             </File>
             <File>
               <FileName>clock.c</FileName>
@@ -619,24 +619,29 @@
               <FilePath>rt-thread\src\clock.c</FilePath>
             </File>
             <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\src\timer.c</FilePath>
+            </File>
+            <File>
               <FileName>signal.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\src\signal.c</FilePath>
             </File>
             <File>
-              <FileName>idle.c</FileName>
+              <FileName>mempool.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\idle.c</FilePath>
+              <FilePath>rt-thread\src\mempool.c</FilePath>
             </File>
             <File>
-              <FileName>kservice.c</FileName>
+              <FileName>components.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\kservice.c</FilePath>
+              <FilePath>rt-thread\src\components.c</FilePath>
             </File>
             <File>
-              <FileName>memheap.c</FileName>
+              <FileName>object.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\src\memheap.c</FilePath>
+              <FilePath>rt-thread\src\object.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -649,24 +654,24 @@
               <FilePath>rt-thread\components\libc\compilers\armlibc\libc.c</FilePath>
             </File>
             <File>
-              <FileName>syscalls.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\armlibc\syscalls.c</FilePath>
-            </File>
-            <File>
               <FileName>mem_std.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\components\libc\compilers\armlibc\mem_std.c</FilePath>
             </File>
             <File>
-              <FileName>stdlib.c</FileName>
+              <FileName>syscalls.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\libc\compilers\common\stdlib.c</FilePath>
+              <FilePath>rt-thread\components\libc\compilers\armlibc\syscalls.c</FilePath>
             </File>
             <File>
               <FileName>time.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\components\libc\compilers\common\time.c</FilePath>
+            </File>
+            <File>
+              <FileName>stdlib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\libc\compilers\common\stdlib.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -744,20 +749,30 @@
           <GroupName>Linkkit/components</GroupName>
           <Files>
             <File>
-              <FileName>cJSON.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\components\subdev\cJSON.c</FilePath>
-            </File>
-            <File>
               <FileName>aiot_subdev_api.c</FileName>
               <FileType>1</FileType>
               <FilePath>applications\LinkSDK\components\subdev\aiot_subdev_api.c</FilePath>
+            </File>
+            <File>
+              <FileName>cJSON.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\components\subdev\cJSON.c</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Linkkit/core</GroupName>
           <Files>
+            <File>
+              <FileName>aiot_mqtt_api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\core\aiot_mqtt_api.c</FilePath>
+            </File>
+            <File>
+              <FileName>core_sysdep.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\core\sysdep\core_sysdep.c</FilePath>
+            </File>
             <File>
               <FileName>core_global.c</FileName>
               <FileType>1</FileType>
@@ -774,24 +789,9 @@
               <FilePath>applications\LinkSDK\core\utils\core_string.c</FilePath>
             </File>
             <File>
-              <FileName>core_adapter.c</FileName>
+              <FileName>core_log.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\core\sysdep\core_adapter.c</FilePath>
-            </File>
-            <File>
-              <FileName>core_sha256.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\core\utils\core_sha256.c</FilePath>
-            </File>
-            <File>
-              <FileName>core_sysdep.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\core\sysdep\core_sysdep.c</FilePath>
-            </File>
-            <File>
-              <FileName>aiot_state_api.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\core\aiot_state_api.c</FilePath>
+              <FilePath>applications\LinkSDK\core\utils\core_log.c</FilePath>
             </File>
             <File>
               <FileName>core_auth.c</FileName>
@@ -799,14 +799,19 @@
               <FilePath>applications\LinkSDK\core\utils\core_auth.c</FilePath>
             </File>
             <File>
-              <FileName>aiot_mqtt_api.c</FileName>
+              <FileName>core_adapter.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\core\aiot_mqtt_api.c</FilePath>
+              <FilePath>applications\LinkSDK\core\sysdep\core_adapter.c</FilePath>
             </File>
             <File>
-              <FileName>core_log.c</FileName>
+              <FileName>aiot_state_api.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\core\utils\core_log.c</FilePath>
+              <FilePath>applications\LinkSDK\core\aiot_state_api.c</FilePath>
+            </File>
+            <File>
+              <FileName>core_sha256.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\core\utils\core_sha256.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -814,79 +819,9 @@
           <GroupName>Linkkit/external</GroupName>
           <Files>
             <File>
-              <FileName>sha1.c</FileName>
+              <FileName>ssl_tls.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\sha1.c</FilePath>
-            </File>
-            <File>
-              <FileName>pk.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\pk.c</FilePath>
-            </File>
-            <File>
-              <FileName>debug.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\debug.c</FilePath>
-            </File>
-            <File>
-              <FileName>error.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\error.c</FilePath>
-            </File>
-            <File>
-              <FileName>x509.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\x509.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_ciphersuites.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\ssl_ciphersuites.c</FilePath>
-            </File>
-            <File>
-              <FileName>md.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\md.c</FilePath>
-            </File>
-            <File>
-              <FileName>ctr_drbg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\ctr_drbg.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_cookie.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\ssl_cookie.c</FilePath>
-            </File>
-            <File>
-              <FileName>pk_wrap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\pk_wrap.c</FilePath>
-            </File>
-            <File>
-              <FileName>md_wrap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\md_wrap.c</FilePath>
-            </File>
-            <File>
-              <FileName>cipher.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\cipher.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsa.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\rsa.c</FilePath>
-            </File>
-            <File>
-              <FileName>ali_ca_cert.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\ali_ca_cert.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_cli.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\ssl_cli.c</FilePath>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\ssl_tls.c</FilePath>
             </File>
             <File>
               <FileName>base64.c</FileName>
@@ -894,14 +829,19 @@
               <FilePath>applications\LinkSDK\external\mbedtls\library\base64.c</FilePath>
             </File>
             <File>
-              <FileName>aes.c</FileName>
+              <FileName>cipher_wrap.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\aes.c</FilePath>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\cipher_wrap.c</FilePath>
             </File>
             <File>
-              <FileName>platform.c</FileName>
+              <FileName>md.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\platform.c</FilePath>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\md.c</FilePath>
+            </File>
+            <File>
+              <FileName>rsa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\rsa.c</FilePath>
             </File>
             <File>
               <FileName>pem.c</FileName>
@@ -909,39 +849,9 @@
               <FilePath>applications\LinkSDK\external\mbedtls\library\pem.c</FilePath>
             </File>
             <File>
-              <FileName>ssl_tls.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\ssl_tls.c</FilePath>
-            </File>
-            <File>
-              <FileName>asn1parse.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\asn1parse.c</FilePath>
-            </File>
-            <File>
-              <FileName>oid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\oid.c</FilePath>
-            </File>
-            <File>
               <FileName>sha256.c</FileName>
               <FileType>1</FileType>
               <FilePath>applications\LinkSDK\external\mbedtls\library\sha256.c</FilePath>
-            </File>
-            <File>
-              <FileName>x509_crt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\x509_crt.c</FilePath>
-            </File>
-            <File>
-              <FileName>entropy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\entropy.c</FilePath>
-            </File>
-            <File>
-              <FileName>bignum.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\bignum.c</FilePath>
             </File>
             <File>
               <FileName>rsa_internal.c</FileName>
@@ -949,19 +859,114 @@
               <FilePath>applications\LinkSDK\external\mbedtls\library\rsa_internal.c</FilePath>
             </File>
             <File>
+              <FileName>oid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\oid.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_ciphersuites.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\ssl_ciphersuites.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\sha1.c</FilePath>
+            </File>
+            <File>
+              <FileName>bignum.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\bignum.c</FilePath>
+            </File>
+            <File>
+              <FileName>ali_ca_cert.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\ali_ca_cert.c</FilePath>
+            </File>
+            <File>
+              <FileName>pk_wrap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\pk_wrap.c</FilePath>
+            </File>
+            <File>
+              <FileName>cipher.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\cipher.c</FilePath>
+            </File>
+            <File>
+              <FileName>entropy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\entropy.c</FilePath>
+            </File>
+            <File>
+              <FileName>x509_crt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\x509_crt.c</FilePath>
+            </File>
+            <File>
+              <FileName>md_wrap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\md_wrap.c</FilePath>
+            </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_cli.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\ssl_cli.c</FilePath>
+            </File>
+            <File>
+              <FileName>asn1parse.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\asn1parse.c</FilePath>
+            </File>
+            <File>
+              <FileName>error.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\error.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_cookie.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\ssl_cookie.c</FilePath>
+            </File>
+            <File>
+              <FileName>ctr_drbg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\ctr_drbg.c</FilePath>
+            </File>
+            <File>
+              <FileName>x509.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\x509.c</FilePath>
+            </File>
+            <File>
               <FileName>pkparse.c</FileName>
               <FileType>1</FileType>
               <FilePath>applications\LinkSDK\external\mbedtls\library\pkparse.c</FilePath>
             </File>
             <File>
+              <FileName>platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\platform.c</FilePath>
+            </File>
+            <File>
+              <FileName>aes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\aes.c</FilePath>
+            </File>
+            <File>
+              <FileName>pk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\external\mbedtls\library\pk.c</FilePath>
+            </File>
+            <File>
               <FileName>platform_util.c</FileName>
               <FileType>1</FileType>
               <FilePath>applications\LinkSDK\external\mbedtls\library\platform_util.c</FilePath>
-            </File>
-            <File>
-              <FileName>cipher_wrap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\external\mbedtls\library\cipher_wrap.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -969,19 +974,14 @@
           <GroupName>Linkkit/portfiles</GroupName>
           <Files>
             <File>
-              <FileName>aiot_at_api.c</FileName>
+              <FileName>net_at_impl.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\portfiles\aiot_port\at\aiot_at_api.c</FilePath>
+              <FilePath>applications\LinkSDK\portfiles\aiot_port\at\net_at_impl.c</FilePath>
             </File>
             <File>
               <FileName>quectel_bc260y_tcp.c</FileName>
               <FileType>1</FileType>
               <FilePath>applications\LinkSDK\portfiles\aiot_port\at\module\quectel_bc260y_tcp.c</FilePath>
-            </File>
-            <File>
-              <FileName>at_port.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\portfiles\aiot_port\at_port.c</FilePath>
             </File>
             <File>
               <FileName>rtt_adapter.c</FileName>
@@ -994,9 +994,14 @@
               <FilePath>applications\LinkSDK\portfiles\aiot_port\os_rtthread_impl.c</FilePath>
             </File>
             <File>
-              <FileName>net_at_impl.c</FileName>
+              <FileName>at_port.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\LinkSDK\portfiles\aiot_port\at\net_at_impl.c</FilePath>
+              <FilePath>applications\LinkSDK\portfiles\aiot_port\at_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>aiot_at_api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\LinkSDK\portfiles\aiot_port\at\aiot_at_api.c</FilePath>
             </File>
           </Files>
         </Group>
