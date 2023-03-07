@@ -545,8 +545,7 @@ static int mqtt_publish(mqtt_adapter_t *adapter, const char *topic, const char *
 
 static int subdev_publish(mqtt_adapter_t *adapter, const int id, const char *payload, rt_size_t len)
 {
-    if(id >= sizeof(ali_handle.topics)/sizeof(ali_handle.topics[0]) || id < 0
-    || ali_handle.topics[id].post == RT_NULL)
+    if(id >= sizeof(ali_handle.topics)/sizeof(ali_handle.topics[0]) || id < 0)
     {
         return -RT_EINVAL;
     }
