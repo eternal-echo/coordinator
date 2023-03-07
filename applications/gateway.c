@@ -232,5 +232,5 @@ static void gateway_test(int argc, char **argv)
         LOG_E("gateway test <init|connect|disconnect|deinit|publish>");
     }
 }
-MSH_CMD_EXPORT(gateway_test, gateway);
+MSH_CMD_EXPORT_ALIAS(gateway_test, gateway, gateway test);
 #endif
