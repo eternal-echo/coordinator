@@ -476,18 +476,19 @@ static int mqtt_disconnect(mqtt_adapter_t *adapter)
         LOG_E("aiot_subdev_send_batch_logout failed, res: -0x%04X", -res);
         aiot_subdev_deinit(&ali_handle.subdev);
         demo_mqtt_stop(&ali_handle.mqtt);
-        return -1;
+        return -RT_ERROR;
     }
 
     res = aiot_subdev_deinit(&ali_handle.subdev);
     if (res < STATE_SUCCESS) {
         LOG_E("aiot_subdev_deinit failed: -0x%04X", res);
+        return -RT_ERROR;
     }
 
     res = demo_mqtt_stop(&ali_handle.mqtt);
     if (res < 0) {
         LOG_E("demo_start_stop failed");
-        return -1;
+        return -RT_ERROR;
     }
 
     return RT_EOK;
@@ -500,7 +501,7 @@ static int mqtt_publish(mqtt_adapter_t *adapter, const char *topic, const char *
     res = aiot_mqtt_pub(ali_handle.mqtt, (char *)topic, (uint8_t *)payload, len, 0);
     if (res < 0) {
         LOG_E("aiot_mqtt_pub failed, res: -0x%04X", -res);
-        return -1;
+        return -RT_ERROR;
     }
     return RT_EOK;
     /* 子设备订阅自定义topic. topic中填入子设备自己的product_key, device_name */

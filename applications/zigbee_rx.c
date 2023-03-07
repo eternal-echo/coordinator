@@ -42,7 +42,6 @@ void zignee_rx_thread(void *parameter)
 {
     rt_err_t result;
     rt_uint16_t cnt = 0, id = 0;
-    // install signal handler of error
     rt_signal_install(ERROR_SIGNAL, error_signal_handler);
     while(1)
     {
