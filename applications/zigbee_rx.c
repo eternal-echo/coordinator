@@ -12,7 +12,7 @@
 #include <rtdevice.h>
 #include <board.h>
 
-#define LOG_TAG    "APP.rx"
+#define LOG_TAG    "app.rx"
 #define LOG_LVL    DBG_LOG
 #include <rtdbg.h>
 

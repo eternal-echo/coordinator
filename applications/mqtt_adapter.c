@@ -25,10 +25,6 @@
 #define DBG_LVL DBG_LOG
 #include <rtdbg.h>
 
-#define PRODUCT_KEY 	"hcixxJENrUz"
-#define DEVICE_NAME 	"coordinator0"
-#define DEVICE_SECRET "bafdf3991aeab4fe2991e3d281a9f725"
-
 struct subdev_topic
 {
     char post[70];
@@ -48,9 +44,9 @@ static int mqtt_publish(mqtt_adapter_t *adapter, const char *topic, const char *
 static int subdev_publish(mqtt_adapter_t *adapter, const int id, const char *payload, rt_size_t len);
 
 /* TODO: 替换为自己设备的三元组 */
-char *product_key       = PRODUCT_KEY;
-char *device_name       = DEVICE_NAME;
-char *device_secret     = DEVICE_SECRET;
+char *product_key       = COORDINATOR_PRODUCT_KEY;
+char *device_name       = COORDINATOR_DEVICE_NAME;
+char *device_secret     = COORDINATOR_DEVICE_SECRET;
 
 /*
     TODO: 替换为自己实例的接入点
@@ -67,7 +63,7 @@ char *device_secret     = DEVICE_SECRET;
 
     详情请见: https://help.aliyun.com/document_detail/147356.html
 */
-char  *mqtt_host = PRODUCT_KEY".iot-as-mqtt.cn-shanghai.aliyuncs.com";
+char  *mqtt_host = COORDINATOR_MQTT_HOST;
 
 /* 位于portfiles/aiot_port文件夹下的系统适配函数集合 */
 extern aiot_sysdep_portfile_t g_aiot_sysdep_portfile;
@@ -81,20 +77,21 @@ static uint8_t g_mqtt_process_thread_running = 0;
 static uint8_t g_mqtt_recv_thread_running = 0;
 
 /* TODO: 替换为用户自己子设备设备的三元组 */
-aiot_subdev_dev_t g_subdev[NODE_NUM] = {
-    {
-        "hcixG5BeXXR",
-        "node0",
-        "4fbe100e3201e1bebec25d5693ab3976",
-        "X8WmP94UNIycqpeR",
-    },
-    {
-        "hcixG5BeXXR",
-        "node1",
-        "fee663524a1b1662a0c42d48ef8ca280",
-        "X8WmP94UNIycqpeR",
-    },
-};
+// aiot_subdev_dev_t g_subdev[NODE_NUM] = {
+//     {
+//         "hcixG5BeXXR",
+//         "node0",
+//         "4fbe100e3201e1bebec25d5693ab3976",
+//         "X8WmP94UNIycqpeR",
+//     },
+//     {
+//         "hcixG5BeXXR",
+//         "node1",
+//         "fee663524a1b1662a0c42d48ef8ca280",
+//         "X8WmP94UNIycqpeR",
+//     },
+// };
+aiot_subdev_dev_t g_subdev[NODE_NUM] = NODE_INFO;
 
 static struct aiot_handle ali_handle = {0};
 
@@ -542,10 +539,15 @@ static int mqtt_publish(mqtt_adapter_t *adapter, const char *topic, const char *
             LOG_D("aiot_mqtt_pub failed, res: -0x%04X", -res);
         }
     }
-    */   
+    */
 }
 
 static int subdev_publish(mqtt_adapter_t *adapter, const int id, const char *payload, rt_size_t len)
 {
+    if(id >= sizeof(ali_handle.topics)/sizeof(ali_handle.topics[0]) || id < 0
+    || ali_handle.topics[id].post == RT_NULL)
+    {
+        return -RT_EINVAL;
+    }
     return mqtt_publish(adapter, ali_handle.topics[id].post, payload, len);
 }
