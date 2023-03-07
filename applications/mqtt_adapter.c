@@ -22,7 +22,7 @@
 #include <gateway.h>
 
 #define DBG_TAG "mqtt_adapter"
-#define DBG_LVL DBG_LOG
+#define DBG_LVL GATEWAY_DEBUG_LEVEL
 #include <rtdbg.h>
 
 struct subdev_topic

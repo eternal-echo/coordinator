@@ -9,7 +9,7 @@
 #include <cJSON.h>
 
 #define LOG_TAG "at_port"
-#define LOG_LVL DBG_INFO
+#define LOG_LVL GATEWAY_DEBUG_LEVEL
 #include <rtdbg.h>
 
 #define AIOT_AT_PORT_NAME "uart3"   /* 串口设备名称 */

@@ -17,12 +17,11 @@
 #include "aiot_sysdep_api.h"
 #include "aiot_mqtt_api.h"
 #include "aiot_subdev_api.h"
+#include <gateway.h>
 
 #define LOG_TAG    "app.tx"
-#define LOG_LVL    DBG_LOG
+#define LOG_LVL    GATEWAY_DEBUG_LEVEL
 #include <rtdbg.h>
-
-#include <gateway.h>
 
 static void error_signal_handler(int signo);
 

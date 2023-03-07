@@ -14,7 +14,14 @@
 #include <rtthread.h>
 #include <mqtt_adapter.h>
 #include <cJSON.h>
+
 #define GATEWAY_DEBUG
+#ifdef GATEWAY_DEBUG
+#define GATEWAY_DEBUG_LEVEL DBG_LOG
+#else
+#define GATEWAY_DEBUG_LEVEL DBG_INFO
+#endif
+
 // error signal
 #define ERROR_SIGNAL    SIGUSR1
 // buffer size of cJson payload
@@ -42,8 +49,8 @@
     },\
     {\
         "hcixG5BeXXR",\
-        "node0",\
-        "4fbe100e3201e1bebec25d5693ab3976",\
+        "node1",\
+        "fee663524a1b1662a0c42d48ef8ca280",\
         "X8WmP94UNIycqpeR",\
     }\
 }
