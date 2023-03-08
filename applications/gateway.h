@@ -15,6 +15,7 @@
 #include <mqtt_adapter.h>
 #include <cJSON.h>
 
+// debug 信息
 #define GATEWAY_DEBUG
 #ifdef GATEWAY_DEBUG
 #define GATEWAY_DEBUG_LEVEL DBG_LOG
@@ -22,17 +23,27 @@
 #define GATEWAY_DEBUG_LEVEL DBG_INFO
 #endif
 
+/* AT设备 */
+// #define GATWAY_AT_DEVICE_USING_BC26
+#define GATWAY_AT_DEVICE_USING_ESP8266
+
+#ifdef GATWAY_AT_DEVICE_USING_ESP8266
+#define GATWAY_WIFI_SSID "CMCC-201"
+#define GATWAY_WIFI_PWD  "yy4838212"
+#endif
+
 // error signal
 #define ERROR_SIGNAL    SIGUSR1
 // buffer size of cJson payload
 #define PAYLOAD_SIZE    256
-
+/* MQTT 配置信息 */
 #define COORDINATOR_PRODUCT_KEY 	"hcixxJENrUz"
 #define COORDINATOR_DEVICE_NAME 	"coordinator0"
 #define COORDINATOR_DEVICE_SECRET "bafdf3991aeab4fe2991e3d281a9f725"
 #define COORDINATOR_MQTT_HOST       COORDINATOR_PRODUCT_KEY".iot-as-mqtt.cn-shanghai.aliyuncs.com"
 // 子设备节点数量
 #define NODE_NUM        2
+// 子设备节点信息
 // typedef struct {
 //     char *product_key;
 //     char *device_name;
@@ -54,6 +65,7 @@
         "X8WmP94UNIycqpeR",\
     }\
 }
+
 // 生理参数数据
 struct physio_param
 {

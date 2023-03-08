@@ -7,6 +7,7 @@
 #include "aiot_at_api.h"
 #include "os_net_interface.h"
 #include <cJSON.h>
+#include <gateway.h>
 
 #define LOG_TAG "at_port"
 #define LOG_LVL GATEWAY_DEBUG_LEVEL
@@ -22,10 +23,15 @@ typedef struct {
     uint16_t end;
 } aiot_uart_rx_buffer_t;
 /* AT设备句柄 */
-extern at_device_t bc26_at_cmd;
 extern aiot_os_al_t g_aiot_rtthread_api;
 extern aiot_net_al_t g_aiot_net_at_api;
+#ifdef GATWAY_AT_DEVICE_USING_BC26
+extern at_device_t bc26_at_cmd;
 at_device_t *at_dev = &bc26_at_cmd;
+#else
+extern at_device_t esp8266_at_cmd;
+at_device_t *at_dev = &esp8266_at_cmd;
+#endif
 /* cJSON 接口 */
 cJSON_Hooks cjson_hooks;
 /* 串口设备句柄 */
