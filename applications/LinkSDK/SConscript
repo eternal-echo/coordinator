@@ -79,7 +79,10 @@ CPPPATH = []
 src     = []
 src += Glob('portfiles/aiot_port/*.c')
 src += Glob('portfiles/aiot_port/at/*.c')
-src += Glob('portfiles/aiot_port/at/module/quectel_bc260y_tcp.c')
+if GetDepend('GATEWAY_AT_DEVICE_USING_BC26'):
+    src += Glob('portfiles/aiot_port/at/module/quectel_bc260y_tcp.c')
+if GetDepend('GATEWAY_AT_DEVICE_USING_ESP8266'):
+    src += Glob('portfiles/aiot_port/at/module/esp8266_tcp.c')
 CPPPATH += [cwd + '/portfiles/aiot_port/at']
 CPPPATH += [cwd + '/portfiles/aiot_port']
 groups += DefineGroup('Linkkit/portfiles', src, depend = [''], CPPPATH = CPPPATH)

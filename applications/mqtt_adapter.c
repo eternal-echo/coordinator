@@ -27,14 +27,7 @@
 
 struct subdev_topic
 {
-    char post[70];
-};
-
-struct aiot_handle
-{
-    void *mqtt;
-    void *subdev;
-    struct subdev_topic topics[NODE_NUM];
+    char post[GATEWAY_TOPIC_SIZE];
 };
 
 static int mqtt_init(mqtt_adapter_t *adapter);
@@ -44,9 +37,9 @@ static int mqtt_publish(mqtt_adapter_t *adapter, const char *topic, const char *
 static int subdev_publish(mqtt_adapter_t *adapter, const int id, const char *payload, rt_size_t len);
 
 /* TODO: 替换为自己设备的三元组 */
-char *product_key       = COORDINATOR_PRODUCT_KEY;
-char *device_name       = COORDINATOR_DEVICE_NAME;
-char *device_secret     = COORDINATOR_DEVICE_SECRET;
+char *product_key       = GATEWAY_MQTT_PRODUCT_KEY;
+char *device_name       = GATEWAY_MQTT_DEVICE_NAME;
+char *device_secret     = GATEWAY_MQTT_DEVICE_SECRET;
 
 /*
     TODO: 替换为自己实例的接入点
@@ -63,7 +56,8 @@ char *device_secret     = COORDINATOR_DEVICE_SECRET;
 
     详情请见: https://help.aliyun.com/document_detail/147356.html
 */
-char  *mqtt_host = COORDINATOR_MQTT_HOST;
+char  *mqtt_host = GATEWAY_MQTT_HOST;
+uint16_t    port = GATEWAY_MQTT_PORT;      /* 无论设备是否使用TLS连接阿里云平台, 目的端口都是443 */
 
 /* 位于portfiles/aiot_port文件夹下的系统适配函数集合 */
 extern aiot_sysdep_portfile_t g_aiot_sysdep_portfile;
@@ -77,22 +71,32 @@ static uint8_t g_mqtt_process_thread_running = 0;
 static uint8_t g_mqtt_recv_thread_running = 0;
 
 /* TODO: 替换为用户自己子设备设备的三元组 */
-// aiot_subdev_dev_t g_subdev[NODE_NUM] = {
-//     {
-//         "hcixG5BeXXR",
-//         "node0",
-//         "4fbe100e3201e1bebec25d5693ab3976",
-//         "X8WmP94UNIycqpeR",
-//     },
-//     {
-//         "hcixG5BeXXR",
-//         "node1",
-//         "fee663524a1b1662a0c42d48ef8ca280",
-//         "X8WmP94UNIycqpeR",
-//     },
-// };
-aiot_subdev_dev_t g_subdev[NODE_NUM] = NODE_INFO;
+aiot_subdev_dev_t g_subdev[] = 
+{
+#ifdef SUBDEVICE_0_MQTT_ENABLE
+    {
+        SUBDEVICE_MQTT_PRODUCT_KEY,
+        SUBDEVICE_0_MQTT_DEVICE_NAME,
+        SUBDEVICE_0_MQTT_DEVICE_SECRET,
+        SUBDEVICE_MQTT_PRODUCT_SECRET,
+    },
+#endif
+#ifdef SUBDEVICE_1_MQTT_ENABLE
+    {
+        SUBDEVICE_MQTT_PRODUCT_KEY,
+        SUBDEVICE_1_MQTT_DEVICE_NAME,
+        SUBDEVICE_1_MQTT_DEVICE_SECRET,
+        SUBDEVICE_MQTT_PRODUCT_SECRET,
+    },
+#endif
+};
 
+struct aiot_handle
+{
+    void *mqtt;
+    void *subdev;
+    struct subdev_topic topics[sizeof(g_subdev) / sizeof(g_subdev[0])];
+};
 static struct aiot_handle ali_handle = {0};
 
 /* TODO: 如果要关闭日志, 就把这个函数实现为空, 如果要减少日志, 可根据code选择不打印
@@ -222,7 +226,6 @@ void demo_mqtt_recv_thread(void *args)
 int32_t demo_mqtt_start(void **handle)
 {
     int32_t     res = STATE_SUCCESS;
-    uint16_t    port = 443;      /* 无论设备是否使用TLS连接阿里云平台, 目的端口都是443 */
     aiot_sysdep_network_cred_t cred; /* 安全凭据结构体, 如果要用TLS, 这个结构体中配置CA证书等参数 */
 
     /* 创建SDK的安全凭据, 用于建立TLS连接 */
@@ -388,7 +391,7 @@ static int mqtt_init(mqtt_adapter_t *adapter)
     aiot_state_set_logcb(demo_state_logcb);
 
     /* 初始化subdev topic */
-    for(i = 0; i < NODE_NUM; i++)
+    for(i = 0; i < sizeof(g_subdev) / sizeof(g_subdev[0]); i++)
     {
         // "/sys/hcixG5BeXXR/node0/thing/event/property/post"
         rt_snprintf(ali_handle.topics[i].post, sizeof(ali_handle.topics[i].post),

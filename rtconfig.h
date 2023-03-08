@@ -157,8 +157,18 @@
 
 /* language packages */
 
+/* JSON: JavaScript Object Notation, a lightweight data-interchange format */
+
+
+/* XML: Extensible Markup Language */
+
 
 /* multimedia packages */
+
+/* LVGL: powerful and easy-to-use embedded GUI library */
+
+
+/* u8g2: a monochrome graphic library */
 
 
 /* tools packages */
@@ -166,14 +176,43 @@
 
 /* system packages */
 
+/* enhanced kernel services */
+
+
+/* acceleration: Assembly language or algorithmic acceleration packages */
+
+
+/* CMSIS: ARM Cortex-M Microcontroller Software Interface Standard */
+
+
+/* Micrium: Micrium software products porting for RT-Thread */
+
 
 /* peripheral libraries and drivers */
+
+/* sensors drivers */
+
+
+/* touch drivers */
+
+
+/* Kendryte SDK */
+
+
+/* AI packages */
+
+
+/* Signal Processing and Control Algorithm Packages */
 
 
 /* miscellaneous packages */
 
+/* project laboratory */
 
 /* samples: kernel and components samples */
+
+
+/* entertainment: terminal games and other interesting software packages */
 
 #define SOC_FAMILY_STM32
 #define SOC_SERIES_STM32F1
@@ -197,5 +236,36 @@
 
 /* Board extended module Drivers */
 
+/* Gateway Configuration */
+
+#define GATEWAY_DEBUG
+
+/* Gateway AT Device Type */
+
+#define GATEWAY_AT_DEVICE_USING_ESP8266
+#define GATEWAY_WIFI_SSID "honor"
+#define GATEWAY_WIFI_PWD "33445566"
+#define GATEWAY_AT_BAUD_RATE 115200
+#define GATEWAY_AT_UART_BUFFER_SIZE 512
+#define GATEWAY_AT_RESET_PIN 5
+
+/* Gateway MQTT Configuration */
+
+#define GATEWAY_MQTT_HOST "hcixxJENrUz.iot-as-mqtt.cn-shanghai.aliyuncs.com"
+#define GATEWAY_MQTT_PORT 443
+#define GATEWAY_MQTT_PRODUCT_KEY "hcixxJENrUz"
+#define GATEWAY_MQTT_DEVICE_NAME "coordinator0"
+#define GATEWAY_MQTT_DEVICE_SECRET "bafdf3991aeab4fe2991e3d281a9f725"
+
+/* Subdevice Configuration */
+
+#define SUBDEVICE_MQTT_PRODUCT_KEY "hcixG5BeXXR"
+#define SUBDEVICE_MQTT_PRODUCT_SECRET "X8WmP94UNIycqpeR"
+#define SUBDEVICE_0_MQTT_ENABLE
+#define SUBDEVICE_0_MQTT_DEVICE_NAME "node0"
+#define SUBDEVICE_0_MQTT_DEVICE_SECRET "4fbe100e3201e1bebec25d5693ab3976"
+#define SUBDEVICE_1_MQTT_ENABLE
+#define SUBDEVICE_1_MQTT_DEVICE_NAME "node1"
+#define SUBDEVICE_1_MQTT_DEVICE_SECRET "fee663524a1b1662a0c42d48ef8ca280"
 
 #endif

@@ -16,8 +16,6 @@
 #define AIOT_AT_PORT_NAME "uart3"   /* 串口设备名称 */
 #define AIOT_UART_RX_BUFFER_SIZE 256
 
-#define BC28_RESET_N_PIN              5
-
 typedef struct {
     uint8_t  data[AIOT_UART_RX_BUFFER_SIZE];
     uint16_t end;
@@ -44,14 +42,18 @@ static aiot_uart_rx_buffer_t aiot_rx_buffer = {0};
 static struct rt_mempool aiot_mp;
 rt_mp_t aiot_mp_handle = &aiot_mp;
 
-static void bc28_reset(void)
+/**
+ * @brief 重置AT设备: 重置引脚拉低1s，然后拉高
+ * 
+ */
+static void at_reset(void)
 {
-    rt_pin_mode(BC28_RESET_N_PIN, PIN_MODE_OUTPUT);
-    rt_pin_write(BC28_RESET_N_PIN, PIN_HIGH);
+    rt_pin_mode(GATEWAY_AT_RESET_PIN, PIN_MODE_OUTPUT);
+    rt_pin_write(GATEWAY_AT_RESET_PIN, PIN_HIGH);
 
     rt_thread_mdelay(300);
 
-    rt_pin_write(BC28_RESET_N_PIN, PIN_LOW);
+    rt_pin_write(GATEWAY_AT_RESET_PIN, PIN_LOW);
 
     rt_thread_mdelay(1000);
 }
@@ -125,10 +127,10 @@ rt_int32_t at_rtt_init(void)
     serial = rt_device_find(AIOT_AT_PORT_NAME);
     struct serial_configure config = RT_SERIAL_CONFIG_DEFAULT;
 
-    config.baud_rate = BAUD_RATE_9600;
+    config.baud_rate = GATEWAY_AT_BAUD_RATE;
     config.data_bits = DATA_BITS_8;
     config.stop_bits = STOP_BITS_1;
-    config.bufsz     = 512;
+    config.bufsz     = GATEWAY_AT_UART_BUFFER_SIZE;
     config.parity    = PARITY_NONE;
 
     rt_device_control(serial, RT_DEVICE_CTRL_CONFIG, &config);
@@ -152,7 +154,7 @@ rt_int32_t at_rtt_init(void)
         return -RT_ERROR;
     }
     /* 唤醒 AT 模块 */
-    bc28_reset();
+    at_reset();
     rt_memset(&aiot_rx_buffer, 0, sizeof(aiot_uart_rx_buffer_t));
     for(i = 0; i < 10; i++)
     {
@@ -216,17 +218,17 @@ static int at_client_dev_init(void)
     struct serial_configure config = RT_SERIAL_CONFIG_DEFAULT;
     serial = rt_device_find(AIOT_AT_PORT_NAME);
 
-    config.baud_rate = BAUD_RATE_9600;
+    config.baud_rate = GATEWAY_AT_BAUD_RATE;
     config.data_bits = DATA_BITS_8;
     config.stop_bits = STOP_BITS_1;
-    config.bufsz     = 512;
+    config.bufsz     = GATEWAY_AT_UART_BUFFER_SIZE;
     config.parity    = PARITY_NONE;
 
     rt_device_control(serial, RT_DEVICE_CTRL_CONFIG, &config);
     rt_device_open(serial, RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_RDWR);
 
     /* initialize AT client */
-    result = at_client_init(AIOT_AT_PORT_NAME, 512);
+    result = at_client_init(AIOT_AT_PORT_NAME, GATEWAY_AT_UART_BUFFER_SIZE);
     if (result < 0)
     {
         LOG_E("at client (%s) init failed.", AIOT_AT_PORT_NAME);

@@ -19,9 +19,9 @@
 
 /* TODO: 用户需要替换为自己的认证信息
  */
-#define COORDINATOR_PRODUCT_KEY 	"a18wPzZJzNG"
-#define COORDINATOR_DEVICE_NAME 	"stm32l4_mbedtls_cat1"
-#define COORDINATOR_DEVICE_SECRET "1888aeb62f4a86aa8922d3f8045865d8"
+#define GATEWAY_MQTT_PRODUCT_KEY 	"a18wPzZJzNG"
+#define GATEWAY_MQTT_DEVICE_NAME 	"stm32l4_mbedtls_cat1"
+#define GATEWAY_MQTT_DEVICE_SECRET "1888aeb62f4a86aa8922d3f8045865d8"
 
 /* 位于portfiles/aiot_port文件夹下的系统适配函数集合 */
 extern aiot_sysdep_portfile_t g_aiot_sysdep_portfile;
@@ -263,9 +263,9 @@ int link_main(int argc, void *argv[])
     int32_t     res = STATE_SUCCESS;
 
     /* TODO: 替换为自己设备的三元组 */
-    char *product_key       = COORDINATOR_PRODUCT_KEY;
-    char *device_name       = COORDINATOR_DEVICE_NAME;
-    char *device_secret     = COORDINATOR_DEVICE_SECRET;
+    char *product_key       = GATEWAY_MQTT_PRODUCT_KEY;
+    char *device_name       = GATEWAY_MQTT_DEVICE_NAME;
+    char *device_secret     = GATEWAY_MQTT_DEVICE_SECRET;
     void *mqtt_handle = NULL;
 
     /* 硬件AT模组初始化 */
@@ -285,7 +285,7 @@ int link_main(int argc, void *argv[])
         osDelay(5000);
 
         /* 示例：向云平台上报设备属性*/
-        char *pub_topic = "/sys/"COORDINATOR_PRODUCT_KEY"/"COORDINATOR_DEVICE_NAME"/thing/event/property/post";
+        char *pub_topic = "/sys/"GATEWAY_MQTT_PRODUCT_KEY"/"GATEWAY_MQTT_DEVICE_NAME"/thing/event/property/post";
         char *pub_payload = "{\"id\":\"1\",\"version\":\"1.0\",\"params\":{\"LightSwitch\":0}}";
 
         res = aiot_mqtt_pub(mqtt_handle, pub_topic, (uint8_t *)pub_payload, (uint32_t)strlen(pub_payload), 0);

@@ -1,0 +1,145 @@
+menu "Gateway Configuration"
+
+config GATEWAY_DEBUG
+    bool "Enable Gateway Debug"
+    default n
+    help
+        Enable or disable debug information for the gateway.
+
+menu "Gateway AT Device Type"
+    choice
+        prompt "Gateway AT Device Type"
+        default GATEWAY_AT_DEVICE_USING_ESP8266
+        help
+            Select the AT device type of the gateway.
+
+        config GATEWAY_AT_DEVICE_USING_ESP8266
+            bool "ESP8266"
+            default y
+
+        config GATEWAY_AT_DEVICE_USING_BC26
+            bool "BC26"
+
+    endchoice
+
+    config GATEWAY_WIFI_SSID
+        string "WiFi SSID"
+        depends on GATEWAY_AT_DEVICE_USING_ESP8266
+        default "honor"
+        help
+            The SSID of the WiFi network.
+
+    config GATEWAY_WIFI_PWD
+        string "WiFi Password"
+        depends on GATEWAY_AT_DEVICE_USING_ESP8266
+        default "33445566"
+        help
+            The password of the WiFi network.
+
+    config GATEWAY_AT_BAUD_RATE
+        int "Gateway AT Device Baud Rate"
+        default 115200 if GATEWAY_AT_DEVICE_USING_ESP8266
+        default 9600 if GATEWAY_AT_DEVICE_USING_BC26
+
+    config GATEWAY_AT_UART_BUFFER_SIZE
+        int "Gateway AT Device UART Buffer Size"
+        default 512
+        help
+            The size of the UART buffer for the AT device.
+        
+    config GATEWAY_AT_RESET_PIN
+        int "AT Device Reset Pin"
+        range 1 255
+        default 5
+        help
+            The reset pin of the AT device.
+endmenu
+
+menu "Gateway MQTT Configuration"
+    config GATEWAY_MQTT_HOST
+        string "MQTT Host"
+        default "hcixxJENrUz.iot-as-mqtt.cn-shanghai.aliyuncs.com"
+        help
+            The host of the MQTT server.
+
+    config GATEWAY_MQTT_PORT
+        int "MQTT Port"
+        default 443
+        help
+            The port of the MQTT server.
+
+    config GATEWAY_MQTT_PRODUCT_KEY
+        string "MQTT Product Key"
+        default "hcixxJENrUz"
+        help
+            The product key of the MQTT server.
+
+    config GATEWAY_MQTT_DEVICE_NAME
+        string "MQTT Device Name"
+        default "coordinator0"
+        help
+            The device name of the MQTT server.
+
+    config GATEWAY_MQTT_DEVICE_SECRET
+        string "MQTT Device Secret"
+        default "bafdf3991aeab4fe2991e3d281a9f725"
+        help
+            The device secret of the MQTT server.
+
+    menu "Subdevice Configuration"
+        config SUBDEVICE_MQTT_PRODUCT_KEY
+            string "Subdevice MQTT Product Key"
+            default "hcixG5BeXXR"
+            help
+                The product key of the MQTT server.
+
+        config SUBDEVICE_MQTT_PRODUCT_SECRET
+            string "Subdevice MQTT Product Secret"
+            default "X8WmP94UNIycqpeR"
+            help
+                The product secret of the MQTT server.
+
+        menuconfig SUBDEVICE_0_MQTT_ENABLE
+            bool "Enable Subdevice 0 MQTT"
+            default y
+            help
+                Enable or disable the MQTT of subdevice 0.
+
+            config SUBDEVICE_0_MQTT_DEVICE_NAME
+                string "Subdevice 0 MQTT Device Name"
+                depends on SUBDEVICE_0_MQTT_ENABLE
+                default "node0"
+                help
+                    The device name of the MQTT server.
+
+            config SUBDEVICE_0_MQTT_DEVICE_SECRET
+                string "Subdevice 0 MQTT Device Secret"
+                depends on SUBDEVICE_0_MQTT_ENABLE
+                default "4fbe100e3201e1bebec25d5693ab3976"
+                help
+                    The device secret of the MQTT server.
+
+        menuconfig SUBDEVICE_1_MQTT_ENABLE
+            bool "Enable Subdevice 1 MQTT"
+            default y
+            help
+                Enable or disable the MQTT of subdevice 1.
+            config SUBDEVICE_1_MQTT_DEVICE_NAME
+                string "Subdevice 1 MQTT Device Name"
+                depends on SUBDEVICE_1_MQTT_ENABLE
+                default "node1"
+                help
+                    The device name of the MQTT server.
+
+            config SUBDEVICE_1_MQTT_DEVICE_SECRET
+                string "Subdevice 1 MQTT Device Secret"
+                depends on SUBDEVICE_1_MQTT_ENABLE
+                default "fee663524a1b1662a0c42d48ef8ca280"
+                help
+                    The device secret of the MQTT server.
+    endmenu
+
+endmenu
+
+endmenu
+
