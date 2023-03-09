@@ -53,6 +53,14 @@ menu "Gateway AT Device Type"
         default 5
         help
             The reset pin of the AT device.
+    
+    config GATEWAY_AT_RESET_LEVEL
+        int "AT Device Reset Level"
+        range 0 1
+        default 0 if GATEWAY_AT_DEVICE_USING_ESP8266
+        default 1 if GATEWAY_AT_DEVICE_USING_BC26
+        help
+            The reset level of the AT device.
 endmenu
 
 menu "Gateway MQTT Configuration"

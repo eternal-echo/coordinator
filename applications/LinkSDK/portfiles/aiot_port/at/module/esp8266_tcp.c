@@ -4,10 +4,6 @@
 
 /* 模块初始化命令表 */
 static core_at_cmd_item_t at_ip_init_cmd_table[] = {
-    { /* 重启模块 */
-        .cmd = "AT+RST\r\n",
-        .rsp = "OK",
-    },
     {
         .cmd = "AT+CWMODE=1\r\n",
         .rsp = "OK",
@@ -20,6 +16,14 @@ static core_at_cmd_item_t at_ip_init_cmd_table[] = {
         .cmd = "AT+CWJAP=\""GATEWAY_WIFI_SSID"\",\""GATEWAY_WIFI_PWD"\"\r\n",
         .rsp = "OK",
     },
+    { /* 查询IP */
+        .cmd = "AT+CIFSR\r\n",
+        .rsp = "OK",
+    },
+    { /* 查询连接状态 */
+        .cmd = "AT+CIPSTATUS\r\n",
+        .rsp = "OK",
+    },
 };
 
 /* TCP建立连接AT命令表 */
@@ -28,14 +32,10 @@ static core_at_cmd_item_t at_connect_cmd_table[] = {
         .fmt = "AT+CIPSTART=%d,\"TCP\",\"%s\",%d\r\n",
         .rsp = "OK",
     },
-    {
-        .cmd = "AT+CIPSTATUS\r\n",
-        .rsp = "TCP",
-    },
-    {
-        .cmd = "AT+CIPMODE=1\r\n",
-        .rsp = "OK",
-    }
+    // {
+    //     .cmd = "AT+CIPMODE=0\r\n",
+    //     .rsp = "OK",
+    // }
 };
 
 /* 发送数据AT命令表 */

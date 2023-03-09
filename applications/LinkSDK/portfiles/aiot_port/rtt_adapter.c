@@ -49,11 +49,22 @@ rt_mp_t aiot_mp_handle = &aiot_mp;
 static void at_reset(void)
 {
     rt_pin_mode(GATEWAY_AT_RESET_PIN, PIN_MODE_OUTPUT);
+    /* ESP8266重置引脚低电平有效 */
+#if GATEWAY_AT_RESET_LEVEL == 0
+    rt_pin_write(GATEWAY_AT_RESET_PIN, PIN_LOW);
+    /* BC26重置引脚高电平有效 */
+#else
     rt_pin_write(GATEWAY_AT_RESET_PIN, PIN_HIGH);
+#endif
 
     rt_thread_mdelay(300);
-
+    /* ESP8266恢复引脚高电平 */
+#if GATEWAY_AT_RESET_LEVEL == 0
+    rt_pin_write(GATEWAY_AT_RESET_PIN, PIN_HIGH);
+    /* BC26恢复引脚低电平 */
+#else
     rt_pin_write(GATEWAY_AT_RESET_PIN, PIN_LOW);
+#endif
 
     rt_thread_mdelay(1000);
 }
