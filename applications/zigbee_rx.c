@@ -69,7 +69,24 @@ void zignee_rx_thread(void *parameter)
                 param[id].temperature += 0.1;
             }
         }
-        
+        for(cnt = 0 ; cnt < 10 ; cnt++)
+        {
+            for(id = 0; id < sizeof(param)/sizeof(param[0]); id++)
+            {
+                result = rt_mq_send_wait(param_mq_handle, &param[id], sizeof(param[id]), RT_WAITING_FOREVER);
+                if(result != RT_EOK)
+                {
+                    LOG_E("send param to mq failed: %d", result);
+                    goto __exit;
+                }
+                rt_thread_mdelay(1000);
+                param[id].systolic -= 1;
+                param[id].diastolic -= 1;
+                param[id].heart_rate -= 1;
+                param[id].blood_oxygen -= 1;
+                param[id].temperature -= 0.1;
+            }
+        }
     }
 __exit:
     LOG_E("zignee rx thread exit");

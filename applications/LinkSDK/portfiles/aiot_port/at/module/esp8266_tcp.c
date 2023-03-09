@@ -31,6 +31,7 @@ static core_at_cmd_item_t at_connect_cmd_table[] = {
     {   /* 建立TCP连接, TODO: aiot_at_nwk_connect接口会组织此AT命令 */
         .fmt = "AT+CIPSTART=%d,\"TCP\",\"%s\",%d\r\n",
         .rsp = "OK",
+        .timeout_ms = 10000,
     },
     // {
     //     .cmd = "AT+CIPMODE=0\r\n",
