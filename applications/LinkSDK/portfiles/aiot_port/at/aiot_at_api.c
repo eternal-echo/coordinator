@@ -22,6 +22,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <rtthread.h>
 
 extern aiot_os_al_t  *os_api;
 extern const char *ali_ca_cert;
@@ -58,6 +59,7 @@ core_at_cmd_item_t at_module_init_cmd_table[] = {
         .cmd = "ATE0\r\n",
         .rsp = "OK",
     },
+#ifndef GATEWAY_AT_DEVICE_USING_ESP8266
     {   /* 获取模组型号 */
         .cmd = "ATI\r\n",
         .rsp = "OK",
@@ -83,6 +85,7 @@ core_at_cmd_item_t at_module_init_cmd_table[] = {
         .rsp = "OK",
         .handler = at_csq_handler,
     },
+#endif
 };
 
 /*** ringbuf start ***/

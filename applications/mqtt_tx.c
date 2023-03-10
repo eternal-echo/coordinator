@@ -25,14 +25,12 @@
 
 static void error_signal_handler(int signo);
 
-extern rt_mq_t param_mq_handle;
-
 void mqtt_tx_thread(void *parameter)
 {
     rt_err_t result;
 
     RT_ASSERT(param_mq_handle != RT_NULL);
-    rt_signal_install(ERROR_SIGNAL, error_signal_handler);
+    rt_signal_install(GATEWAY_ERROR_SIGNAL, error_signal_handler);
     result = gateway_init(&gateway, &mqtt_wrapper, RT_NULL);
     if(result != RT_EOK)
     {
@@ -59,14 +57,14 @@ void mqtt_tx_thread(void *parameter)
     }
 __exit:
     LOG_E("mqtt tx thread exit");
-    rt_thread_kill(zignee_rx_thread_handle, ERROR_SIGNAL);
-    rt_thread_kill(rt_thread_self(), ERROR_SIGNAL);
+    rt_thread_kill(zignee_rx_thread_handle, GATEWAY_ERROR_SIGNAL);
+    rt_thread_kill(rt_thread_self(), GATEWAY_ERROR_SIGNAL);
 }
 
 static void error_signal_handler(int signo)
 {
     LOG_E("error signal: %d", signo);
-    if(signo == ERROR_SIGNAL)
+    if(signo == GATEWAY_ERROR_SIGNAL)
     {
         rt_thread_delete(mqtt_tx_thread_handle);
         gateway_deinit(&gateway);

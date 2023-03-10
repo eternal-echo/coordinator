@@ -7,6 +7,7 @@
 #include "aiot_at_api.h"
 #include "os_net_interface.h"
 #include <cJSON.h>
+#include <gateway.h>
 
 #define LOG_TAG "at_port"
 #define LOG_LVL GATEWAY_DEBUG_LEVEL
@@ -15,17 +16,20 @@
 #define AIOT_AT_PORT_NAME "uart3"   /* 串口设备名称 */
 #define AIOT_UART_RX_BUFFER_SIZE 256
 
-#define BC28_RESET_N_PIN              5
-
 typedef struct {
     uint8_t  data[AIOT_UART_RX_BUFFER_SIZE];
     uint16_t end;
 } aiot_uart_rx_buffer_t;
 /* AT设备句柄 */
-extern at_device_t bc26_at_cmd;
 extern aiot_os_al_t g_aiot_rtthread_api;
 extern aiot_net_al_t g_aiot_net_at_api;
+#ifdef GATWAY_AT_DEVICE_USING_BC26
+extern at_device_t bc26_at_cmd;
 at_device_t *at_dev = &bc26_at_cmd;
+#else
+extern at_device_t esp8266_at_cmd;
+at_device_t *at_dev = &esp8266_at_cmd;
+#endif
 /* cJSON 接口 */
 cJSON_Hooks cjson_hooks;
 /* 串口设备句柄 */
@@ -38,14 +42,29 @@ static aiot_uart_rx_buffer_t aiot_rx_buffer = {0};
 static struct rt_mempool aiot_mp;
 rt_mp_t aiot_mp_handle = &aiot_mp;
 
-static void bc28_reset(void)
+/**
+ * @brief 重置AT设备: 重置引脚拉低1s，然后拉高
+ * 
+ */
+static void at_reset(void)
 {
-    rt_pin_mode(BC28_RESET_N_PIN, PIN_MODE_OUTPUT);
-    rt_pin_write(BC28_RESET_N_PIN, PIN_HIGH);
+    rt_pin_mode(GATEWAY_AT_RESET_PIN, PIN_MODE_OUTPUT);
+    /* ESP8266重置引脚低电平有效 */
+#if GATEWAY_AT_RESET_LEVEL == 0
+    rt_pin_write(GATEWAY_AT_RESET_PIN, PIN_LOW);
+    /* BC26重置引脚高电平有效 */
+#else
+    rt_pin_write(GATEWAY_AT_RESET_PIN, PIN_HIGH);
+#endif
 
     rt_thread_mdelay(300);
-
-    rt_pin_write(BC28_RESET_N_PIN, PIN_LOW);
+    /* ESP8266恢复引脚高电平 */
+#if GATEWAY_AT_RESET_LEVEL == 0
+    rt_pin_write(GATEWAY_AT_RESET_PIN, PIN_HIGH);
+    /* BC26恢复引脚低电平 */
+#else
+    rt_pin_write(GATEWAY_AT_RESET_PIN, PIN_LOW);
+#endif
 
     rt_thread_mdelay(1000);
 }
@@ -119,10 +138,10 @@ rt_int32_t at_rtt_init(void)
     serial = rt_device_find(AIOT_AT_PORT_NAME);
     struct serial_configure config = RT_SERIAL_CONFIG_DEFAULT;
 
-    config.baud_rate = BAUD_RATE_9600;
+    config.baud_rate = GATEWAY_AT_BAUD_RATE;
     config.data_bits = DATA_BITS_8;
     config.stop_bits = STOP_BITS_1;
-    config.bufsz     = 512;
+    config.bufsz     = GATEWAY_AT_UART_BUFFER_SIZE;
     config.parity    = PARITY_NONE;
 
     rt_device_control(serial, RT_DEVICE_CTRL_CONFIG, &config);
@@ -146,7 +165,7 @@ rt_int32_t at_rtt_init(void)
         return -RT_ERROR;
     }
     /* 唤醒 AT 模块 */
-    bc28_reset();
+    at_reset();
     rt_memset(&aiot_rx_buffer, 0, sizeof(aiot_uart_rx_buffer_t));
     for(i = 0; i < 10; i++)
     {
@@ -210,17 +229,17 @@ static int at_client_dev_init(void)
     struct serial_configure config = RT_SERIAL_CONFIG_DEFAULT;
     serial = rt_device_find(AIOT_AT_PORT_NAME);
 
-    config.baud_rate = BAUD_RATE_9600;
+    config.baud_rate = GATEWAY_AT_BAUD_RATE;
     config.data_bits = DATA_BITS_8;
     config.stop_bits = STOP_BITS_1;
-    config.bufsz     = 512;
+    config.bufsz     = GATEWAY_AT_UART_BUFFER_SIZE;
     config.parity    = PARITY_NONE;
 
     rt_device_control(serial, RT_DEVICE_CTRL_CONFIG, &config);
     rt_device_open(serial, RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_RDWR);
 
     /* initialize AT client */
-    result = at_client_init(AIOT_AT_PORT_NAME, 512);
+    result = at_client_init(AIOT_AT_PORT_NAME, GATEWAY_AT_UART_BUFFER_SIZE);
     if (result < 0)
     {
         LOG_E("at client (%s) init failed.", AIOT_AT_PORT_NAME);

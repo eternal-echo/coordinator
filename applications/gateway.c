@@ -156,8 +156,8 @@ rt_err_t gateway_publish(gateway_t *gw, node_param_t *param)
         cJSON_ReplaceItemInObject(gw->params_json, "SystolicBp", cJSON_CreateNumber(gw->param.systolic));
         cJSON_ReplaceItemInObject(gw->params_json, "DiastolicBp", cJSON_CreateNumber(gw->param.diastolic));
         cJSON_ReplaceItemInObject(gw->params_json, "BloodOxygen", cJSON_CreateNumber(gw->param.blood_oxygen));
-        memset(gw->payload, 0, PAYLOAD_SIZE);
-        cJSON_PrintPreallocated(gw->payload_json, gw->payload, PAYLOAD_SIZE, 0);
+        memset(gw->payload, 0, GATEWAY_PAYLOAD_SIZE);
+        cJSON_PrintPreallocated(gw->payload_json, gw->payload, GATEWAY_PAYLOAD_SIZE, 0);
         LOG_D("payload: %s", gw->payload);
         if(gw->mqtt_handle->subdev_publish(gw->mqtt_handle, gw->param.node_id, gw->payload, strlen(gw->payload)) != RT_EOK)
         {
